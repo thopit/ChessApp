@@ -3,8 +3,11 @@ package de.thomas.chess_app.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.GridPoint2;
+import com.badlogic.gdx.math.Vector3;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +21,11 @@ import chesspresso.position.Position;
 public class GameScreen implements Screen {
     private SpriteBatch batch;
 
+    private OrthographicCamera camera;
+
     private Texture fieldWhite;
     private Texture fieldBlack;
+    private Texture fieldSelected;
 
     private Texture kingWhite;
     private Texture kingBlack;
@@ -36,16 +42,29 @@ public class GameScreen implements Screen {
 
     private Map<Short, Texture> textureMap;
 
-    private final int Y_SHIFT = 90;
+    private GridPoint2 selectedPosition;
+
+    private final int WIDTH = 720;
+    private final int HEIGHT = 1280;
+    private final int Y_SHIFT = 560;
     private final int SQUARE_SIZE = 90;
 
     private Game chessGame;
 
+    public GameScreen(Game chessGame) {
+        this.chessGame = chessGame;
+    }
+
     @Override
     public void show() {
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, WIDTH, HEIGHT);
+
         batch = new SpriteBatch();
+
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
+        fieldSelected = new Texture("field_selected.png");
 
         kingWhite = new Texture("king_white.png");
         kingBlack = new Texture("king_black.png");
@@ -74,7 +93,7 @@ public class GameScreen implements Screen {
         textureMap.put(Chess.WHITE_PAWN, pawnWhite);
         textureMap.put(Chess.BLACK_PAWN, pawnBlack);
 
-        chessGame = new Game();
+        selectedPosition = null;
     }
 
     private void test() {
@@ -102,6 +121,9 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
+
         Position position = chessGame.getPosition();
 
         Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -115,6 +137,11 @@ public class GameScreen implements Screen {
                 }
                 else if ((x % 2 == 1 && y % 2 == 0) || (x % 2 == 0 && y % 2 == 1)) {
                    batch.draw(fieldWhite, x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
+                }
+
+                //Draw selection display
+                if (selectedPosition != null && x == selectedPosition.x && y == selectedPosition.y) {
+                    batch.draw(fieldSelected, x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
                 }
 
                 short stone = (short) position.getStone(Chess.coorToSqi(x, y));
@@ -152,4 +179,26 @@ public class GameScreen implements Screen {
     public void dispose() {
 
     }
+
+    public int getSqi(int posX, int posY) {
+        GridPoint2 position = getPosition(posX, posY);
+
+        return Chess.coorToSqi(position.x, position.y);
+    }
+
+    public GridPoint2 getPosition(int posX, int posY) {
+        Vector3 touchPos = new Vector3();
+        touchPos.set(posX, posY, 0);
+        camera.unproject(touchPos);
+
+        int col = (int) (touchPos.x / SQUARE_SIZE);
+        int row = (int) ((touchPos.y - Y_SHIFT) / SQUARE_SIZE);
+
+        return new GridPoint2(col, row);
+    }
+
+    public void setSelectedPosition(GridPoint2 selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
+
 }
