@@ -21,6 +21,11 @@ public class ChessController {
     public void trySelect(int posX, int posY) {
         GridPoint2 point = gameScreen.getPosition(posX, posY);
         int sqi = gameScreen.getSqi(posX, posY);
+
+        if (sqi < 0) {
+            return;
+        }
+
         Position position = chessGame.getPosition();
         int piece = position.getStone(sqi);
 
@@ -34,6 +39,11 @@ public class ChessController {
 
         int startSqi = gameScreen.getSqi(startX, startY);
         int endSqi = gameScreen.getSqi(endX, endY);
+
+        if (startSqi < 0 || endSqi < 0) {
+            return false;
+        }
+
 
         Position position = chessGame.getPosition();
 

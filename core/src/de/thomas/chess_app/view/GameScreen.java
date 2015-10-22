@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
 
     private final int WIDTH = 720;
     private final int HEIGHT = 1280;
-    private final int Y_SHIFT = 560;
+    private final int Y_SHIFT = 240;//560;
     private final int SQUARE_SIZE = 90;
 
     private Game chessGame;
@@ -94,29 +94,6 @@ public class GameScreen implements Screen {
         textureMap.put(Chess.BLACK_PAWN, pawnBlack);
 
         selectedPosition = null;
-    }
-
-    private void test() {
-        Game chessGame = new Game();
-        short[] moves = chessGame.getPosition().getAllMoves();
-
-        for (short m : moves) {
-            String string = Move.getString(m);
-            //System.out.println(string);
-        }
-
-        Position position = chessGame.getPosition();
-
-        for (int k = 0; k < 64; k++) {
-            int piece = position.getPiece(k);
-            if (piece == Chess.WHITE_KING) {
-                System.out.println("White king at: " + k);
-            }
-
-            if (piece == Chess.BLACK_KING) {
-                System.out.println("Black king at: " + k);
-            }
-        }
     }
 
     @Override
