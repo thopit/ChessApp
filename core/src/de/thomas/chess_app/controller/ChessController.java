@@ -22,7 +22,7 @@ public class ChessController {
         GridPoint2 point = gameScreen.getPosition(posX, posY);
         int sqi = gameScreen.getSqi(posX, posY);
 
-        if (sqi < 0) {
+        if (sqi < 0 || sqi > 63) {
             return;
         }
 
@@ -40,7 +40,7 @@ public class ChessController {
         int startSqi = gameScreen.getSqi(startX, startY);
         int endSqi = gameScreen.getSqi(endX, endY);
 
-        if (startSqi < 0 || endSqi < 0) {
+        if (startSqi < 0 || endSqi < 0 || startSqi > 63 || endSqi > 63) {
             return false;
         }
 
