@@ -7,6 +7,7 @@ import chesspresso.game.Game;
 import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
 import chesspresso.position.Position;
+import de.thomas.chess_app.search.Algorithm;
 import de.thomas.chess_app.view.GameScreen;
 
 public class ChessController {
@@ -67,6 +68,16 @@ public class ChessController {
         }
 
         return false;
+    }
+
+    public void computerMove() {
+        short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition(), 1);
+
+        try {
+            chessGame.getPosition().doMove(move);
+        } catch (IllegalMoveException e) {
+            e.printStackTrace();
+        }
     }
 
     private short getMove(int stone, int startSqi, int endSqi) {

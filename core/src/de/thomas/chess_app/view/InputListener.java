@@ -1,5 +1,6 @@
 package de.thomas.chess_app.view;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -18,7 +19,11 @@ public class InputListener implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+        if (keycode == Input.Keys.ENTER) {
+            controller.computerMove();
+        }
+
+        return true;
     }
 
     @Override
