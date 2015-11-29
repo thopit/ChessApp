@@ -71,7 +71,7 @@ public class ChessController {
     }
 
     public void computerMove() {
-        short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition(), 1);
+        short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition());
 
         try {
             chessGame.getPosition().doMove(move);
