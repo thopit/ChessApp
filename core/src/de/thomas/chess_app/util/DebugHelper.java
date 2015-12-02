@@ -1,7 +1,7 @@
 package de.thomas.chess_app.util;
 
 public class DebugHelper {
-    public static int DEBUG_LEVEL = 2;
+    public static final int DEBUG_LEVEL = 3;
 
     public static void debug(String string, int level) {
         debug(string, level, 0);

@@ -16,6 +16,27 @@ public class ChessUtil {
             value *= -1;
         }
 
+        if (position.isMate()) {
+            if (position.getToPlay() == 0) {
+                if (player == 1) {
+                    return -1000000;
+                }
+                else {
+                    return 1000000;
+                }
+            }
+            else {
+                if (player == 1) {
+                    return 1000000;
+                }
+                else {
+                    return -1000000;
+                }
+            }
+        }
+
+        //TODO Deal with stalemate
+
         return value;
     }
 }
