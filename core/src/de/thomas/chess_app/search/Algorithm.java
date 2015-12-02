@@ -4,6 +4,7 @@ import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
 import chesspresso.position.Position;
 import de.thomas.chess_app.util.ChessUtil;
+import de.thomas.chess_app.util.DebugHelper;
 
 public class Algorithm {
     private static final int MAX_DEPTH = 1;
@@ -28,10 +29,7 @@ public class Algorithm {
 
         short bestMove = 0;
 
-        /* DEBUG */
-        System.out.println();
-        System.out.println("Get best move");
-         /* DEBUG */
+        DebugHelper.debug("\n Get best move", 1);
 
         for (short move : moves) {
             Position testPosition = new Position(position);
@@ -43,16 +41,11 @@ public class Algorithm {
                 return 0;
             }
 
-            /* DEBUG */
-            System.out.println("Checking move: " + Move.getString(move));
-            /* DEBUG */
+            DebugHelper.debug("Checking move: " + Move.getString(move), 1);
 
             int result = -alphaBeta(testPosition, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, -player);
 
-            /* DEBUG */
-            System.out.println("Result: " + result);
-            /* DEBUG */
-
+            DebugHelper.debug("Result: " + result, 1);
 
             if(result > bestResult) {
                 bestResult = result;
@@ -60,10 +53,7 @@ public class Algorithm {
             }
         }
 
-        /* DEBUG */
-        System.out.println("Best move: " + Move.getString(bestMove));
-        System.out.println();
-        /* DEBUG */
+        DebugHelper.debug("Best move: " + Move.getString(bestMove) + "\n", 1);
 
         return bestMove;
     }
@@ -72,14 +62,7 @@ public class Algorithm {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-
-            /* DEBUG */
-            for (int k = depth; k < MAX_DEPTH; k++) {
-                System.out.print("  ");
-            }
-            System.out.println("Material value for player " + player + ": " + ChessUtil.getMaterial(position, player));
-            /* DEBUG */
-
+            DebugHelper.debug("Material value for player " + player + ": " + ChessUtil.getMaterial(position, player), 2, MAX_DEPTH - depth);
 
             return ChessUtil.getMaterial(position, player);
         }
@@ -91,12 +74,7 @@ public class Algorithm {
         for (short move : moves) {
             Position testPosition = new Position(position);
 
-            /* DEBUG */
-            for (int k = depth; k < MAX_DEPTH; k++) {
-                System.out.print("  ");
-            }
-            System.out.println("Following move: " + Move.getString(move));
-            /* DEBUG */
+            DebugHelper.debug("Following move: " + Move.getString(move), 2, MAX_DEPTH - depth);
 
             try {
                 testPosition.doMove(move);
@@ -116,12 +94,8 @@ public class Algorithm {
             }
         }
 
-        /* DEBUG */
-        for (int k = depth; k < MAX_DEPTH; k++) {
-            System.out.print("  ");
-        }
-        System.out.println("Best value: " + bestValue);
-            /* DEBUG */
+        DebugHelper.debug("Best value: " + bestValue, 2, MAX_DEPTH - depth);
+
 
         return bestValue;
     }
