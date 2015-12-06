@@ -19,18 +19,18 @@ public class ChessUtil {
         if (position.isMate()) {
             if (position.getToPlay() == 0) {
                 if (player == 1) {
-                    return -1000000;
+                    return -100000000;
                 }
                 else {
-                    return 1000000;
+                    return 100000000;
                 }
             }
             else {
                 if (player == 1) {
-                    return 1000000;
+                    return 100000000;
                 }
                 else {
-                    return -1000000;
+                    return -100000000;
                 }
             }
         }
