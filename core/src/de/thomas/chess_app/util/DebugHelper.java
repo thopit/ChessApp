@@ -1,7 +1,22 @@
 package de.thomas.chess_app.util;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+
 public class DebugHelper {
-    public static final int DEBUG_LEVEL = 3;
+    private static PrintStream stream = System.out;
+    public static final int DEBUG_LEVEL = 2;
+
+    /*
+    static {
+        try {
+            stream = new PrintStream(new FileOutputStream("output.txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    */
 
     public static void debug(String string, int level) {
         debug(string, level, 0);
@@ -14,7 +29,7 @@ public class DebugHelper {
                 ind += "   ";
             }
 
-            System.out.println(ind + string);
+            stream.println(ind + string);
         }
     }
 }

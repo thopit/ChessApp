@@ -1,32 +1,28 @@
 package de.thomas.chess_app.search;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
 import chesspresso.position.Position;
 import de.thomas.chess_app.util.ChessUtil;
 import de.thomas.chess_app.util.DebugHelper;
+import de.thomas.chess_app.util.Tuple;
 
 public class Algorithm {
-    private static final int MAX_DEPTH = 2;
-    private static Map<Integer, Short> bestMoves;
-
-    static {
-        bestMoves = new HashMap<Integer, Short>();
-    }
+    private static final int MAX_DEPTH = 5;
+    private static int positionsChecked = 0;
 
     public static short bestMoveAlphaBeta(Position position) {
         return bestMoveAlphaBeta(position, MAX_DEPTH);
     }
 
     public static short bestMoveAlphaBeta(Position position, int depth) {
+        long startTime = System.nanoTime();
+
         short[] moves = position.getAllMoves();
         int player = position.getToPlay();
 
@@ -42,8 +38,6 @@ public class Algorithm {
 
         short bestMove = 0;
 
-        DebugHelper.debug("\n Get best move", 2);
-
         for (short move : moves) {
             Position testPosition = new Position(position);
 
@@ -54,11 +48,22 @@ public class Algorithm {
                 return 0;
             }
 
+            positionsChecked++;
+
             DebugHelper.debug("Checking move: " + Move.getString(move), 2);
 
-            int result = -alphaBeta(testPosition, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, -player);
+            Tuple<Integer, List<Short>> resultTuple = alphaBeta(testPosition, depth, -100000000, 100000000, -player);
+            int result = -resultTuple.x;
+            List<Short> followingMoves = resultTuple.y;
+
 
             DebugHelper.debug("Result: " + result, 2);
+            Collections.reverse(followingMoves);
+
+            DebugHelper.debug(Move.getString(move), 2);
+            for (Short m : followingMoves) {
+                DebugHelper.debug(Move.getString(m), 2);
+            }
 
             if(result > bestResult) {
                 bestResult = result;
@@ -66,44 +71,34 @@ public class Algorithm {
             }
         }
 
-        /*
-        DebugHelper.debug("Best move: " + Move.getString(bestMove) + "\n", 2);
+        DebugHelper.debug("Best move: " + Move.getString(bestMove) + " | " + bestResult, 2);
 
+        long timeNeeded = System.nanoTime() - startTime;
+        double secondsNeeded = timeNeeded / 1E9;
+        double posPerSec = positionsChecked / secondsNeeded;
+        DebugHelper.debug("Positions checked: " + new DecimalFormat("#,###").format(positionsChecked)
+                + " in " + String.format("%.4g", secondsNeeded) + " s"
+                + " (" + new DecimalFormat("#,###").format(posPerSec) + " p/s)" , 1);
 
-        List<Map.Entry<Integer, Short>> list = new ArrayList(bestMoves.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<Integer, Short>>() {
-            @Override
-            public int compare(Map.Entry<Integer, Short> o1, Map.Entry<Integer, Short> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
-
-        bestMoves.clear();
-
-
-        for (Map.Entry<Integer, Short> entry : list) {
-            DebugHelper.debug(Move.getString(entry.getValue()), 1);
-        }
-        DebugHelper.debug("", 1);
-        */
 
         return bestMove;
     }
 
-    private static int alphaBeta(Position position, int depth, int alpha, int beta, int player) {
+    private static Tuple<Integer, List<Short>> alphaBeta(Position position, int depth, int alpha, int beta, int player) {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
             DebugHelper.debug("Material value for player " + player + ": " + ChessUtil.getMaterial(position, player), 3, MAX_DEPTH - depth);
 
-            return ChessUtil.getMaterial(position, player);
+            return new Tuple<Integer, List<Short>>(ChessUtil.getMaterial(position, player), new ArrayList<Short>());
+            //return ChessUtil.getMaterial(position, player);
         }
-
 
         //TODO order moves for faster algorithm
 
         int bestValue = Integer.MIN_VALUE;
         short bestMove = 0;
+        List<Short> bestMoveList = null;
 
         for (short move : moves) {
             Position testPosition = new Position(position);
@@ -114,13 +109,18 @@ public class Algorithm {
                 testPosition.doMove(move);
             } catch (IllegalMoveException e) {
                 e.printStackTrace();
-                return 0;
+                return null;
             }
 
-            int value = - alphaBeta(testPosition, depth - 1, -beta, -alpha, -player);
+            positionsChecked++;
+
+
+            Tuple<Integer, List<Short>> result = alphaBeta(testPosition, depth - 1, -beta, -alpha, -player);
+            int value = -result.x;
 
             if (value > bestValue) {
                 bestMove = move;
+                bestMoveList = result.y;
             }
 
             bestValue = Math.max(bestValue, value);
@@ -133,10 +133,8 @@ public class Algorithm {
         }
 
         DebugHelper.debug("Best value: " + bestValue, 3, MAX_DEPTH - depth);
+        bestMoveList.add(bestMove);
 
-        //bestMoves.put(depth, bestMove);
-
-
-        return bestValue;
+        return new Tuple<Integer, List<Short>>(bestValue, bestMoveList);
     }
 }
