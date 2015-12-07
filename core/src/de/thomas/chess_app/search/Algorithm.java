@@ -35,6 +35,8 @@ public class Algorithm {
         }
 
         int bestResult = -100000000;
+        int alpha = -100000000;
+        int beta = 100000000;
 
         short bestMove = 0;
 
@@ -52,7 +54,7 @@ public class Algorithm {
 
             DebugHelper.debug("Checking move: " + Move.getString(move), 2);
 
-            Tuple<Integer, List<Short>> resultTuple = alphaBeta(testPosition, depth, -100000000, 100000000, -player);
+            Tuple<Integer, List<Short>> resultTuple = alphaBeta(testPosition, depth, alpha, beta, -player);
             int result = -resultTuple.x;
             List<Short> followingMoves = resultTuple.y;
 
@@ -68,6 +70,12 @@ public class Algorithm {
             if(result > bestResult) {
                 bestResult = result;
                 bestMove = move;
+            }
+
+            alpha = Math.max(alpha, result);
+
+            if (alpha >= beta) {
+                break;
             }
         }
 
@@ -98,7 +106,7 @@ public class Algorithm {
 
         int bestValue = Integer.MIN_VALUE;
         short bestMove = 0;
-        List<Short> bestMoveList = null;
+        List<Short> bestMoveList = Collections.emptyList();
 
         for (short move : moves) {
             Position testPosition = new Position(position);
