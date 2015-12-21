@@ -3,7 +3,7 @@ package de.thomas.chess_app.util;
 import chesspresso.position.Position;
 
 public class ChessUtil {
-    public static int getMaterial(Position position, int player) {
+    public static int evaluate(Position position, int player) {
         int value = position.getMaterial();
 
         //Normalize to adjust to Chesspresso

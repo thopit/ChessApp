@@ -29,8 +29,7 @@ public class Algorithm {
         //Adapt player numbers to algorithm
         if (player == 0) {
             player = 1;
-        }
-        else if (player == 1) {
+        } else if (player == 1) {
             player = -1;
         }
 
@@ -46,8 +45,9 @@ public class Algorithm {
             try {
                 testPosition.doMove(move);
             } catch (IllegalMoveException e) {
+                //This should never happen
                 e.printStackTrace();
-                return 0;
+                System.exit(1);
             }
 
             positionsChecked++;
@@ -67,7 +67,7 @@ public class Algorithm {
                 DebugHelper.debug(Move.getString(m), 2);
             }
 
-            if(result > bestResult) {
+            if (result > bestResult) {
                 bestResult = result;
                 bestMove = move;
             }
@@ -86,7 +86,7 @@ public class Algorithm {
         double posPerSec = positionsChecked / secondsNeeded;
         DebugHelper.debug("Positions checked: " + new DecimalFormat("#,###").format(positionsChecked)
                 + " in " + String.format("%.4g", secondsNeeded) + " s"
-                + " (" + new DecimalFormat("#,###").format(posPerSec) + " p/s)" , 1);
+                + " (" + new DecimalFormat("#,###").format(posPerSec) + " p/s)", 1);
 
 
         return bestMove;
@@ -96,10 +96,9 @@ public class Algorithm {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-            DebugHelper.debug("Material value for player " + player + ": " + ChessUtil.getMaterial(position, player), 3, MAX_DEPTH - depth);
+            DebugHelper.debug("Material value for player " + player + ": " + ChessUtil.evaluate(position, player), 3, MAX_DEPTH - depth);
 
-            return new Tuple<Integer, List<Short>>(ChessUtil.getMaterial(position, player), new ArrayList<Short>());
-            //return ChessUtil.getMaterial(position, player);
+            return new Tuple<Integer, List<Short>>(ChessUtil.evaluate(position, player), new ArrayList<Short>());
         }
 
         //TODO order moves for faster algorithm
@@ -116,8 +115,9 @@ public class Algorithm {
             try {
                 testPosition.doMove(move);
             } catch (IllegalMoveException e) {
+                //This should never happen
                 e.printStackTrace();
-                return null;
+                System.exit(1);
             }
 
             positionsChecked++;
