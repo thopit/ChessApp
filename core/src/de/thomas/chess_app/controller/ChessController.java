@@ -8,6 +8,7 @@ import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
 import chesspresso.position.Position;
 import de.thomas.chess_app.search.Algorithm;
+import de.thomas.chess_app.util.ChessUtil;
 import de.thomas.chess_app.view.GameScreen;
 
 public class ChessController {
@@ -57,7 +58,10 @@ public class ChessController {
             for (short possibleMove : possibleMoves) {
                 if (move == possibleMove) {
                     try {
+                        //System.out.println(ChessUtil.evaluate(position, 1));
                         position.doMove(move);
+                        //System.out.println(ChessUtil.evaluate(position, 1));
+                        //System.out.println();
                         return true;
                     } catch (IllegalMoveException e) {
                         e.printStackTrace();
