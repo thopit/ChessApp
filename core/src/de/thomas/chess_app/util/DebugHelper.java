@@ -7,16 +7,20 @@ import java.io.PrintStream;
 public class DebugHelper {
     private static PrintStream stream = System.out;
     public static final int DEBUG_LEVEL = 2;
+    public static boolean useFile = false;
 
-    /*
+
     static {
-        try {
-            stream = new PrintStream(new FileOutputStream("output.txt"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (useFile) {
+            try {
+                stream = new PrintStream(new FileOutputStream("output.txt"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
-    */
+
+
 
     public static void debug(String string, int level) {
         debug(string, level, 0);

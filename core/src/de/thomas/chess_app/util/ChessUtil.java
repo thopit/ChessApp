@@ -175,6 +175,8 @@ public class ChessUtil {
             value *= -1;
         }
 
+        /*
+
         int pawnsWhite = 0;
         int knightsWhite = 0;
         int bishopsWhite = 0;
@@ -260,6 +262,8 @@ public class ChessUtil {
             value += kingSquareOpeningWhite[whiteKingSqi];
             value -= kingSquareOpeningBlack[blackKingSqi];
         }
+
+        */
 
 
         //TODO Deal with stalemate
