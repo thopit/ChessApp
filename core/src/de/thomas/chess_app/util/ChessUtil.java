@@ -164,18 +164,18 @@ public class ChessUtil {
             return mateCalculator(position, player);
         }
 
-        int value = position.getMaterial();
+        int materialValue = position.getMaterial();
 
         //Normalize to adjust to Chesspresso
         if (position.getToPlay() == 1) {
-            value *= -1;
+            materialValue *= -1;
         }
         //Normalize so positive value: player 1 is at advantage, negative value: player -1 is at advantage
         if (player == -1) {
-            value *= -1;
+            materialValue *= -1;
         }
 
-        /*
+        int positionValue = 0;
 
         int pawnsWhite = 0;
         int knightsWhite = 0;
@@ -195,43 +195,43 @@ public class ChessUtil {
             int stone = position.getStone(square);
 
             if (stone == Chess.WHITE_PAWN) {
-                value += pawnSquareWhite[square];
+                positionValue += pawnSquareWhite[square];
                 pawnsWhite++;
             }
             else if (stone == Chess.BLACK_PAWN) {
-                value -= pawnSquareBlack[square];
+                positionValue -= pawnSquareBlack[square];
                 pawnsBlack++;
             }
             else if (stone == Chess.WHITE_KNIGHT) {
-                value += knightSquareWhite[square];
+                positionValue += knightSquareWhite[square];
                 knightsWhite++;
             }
             else if (stone == Chess.BLACK_KNIGHT) {
-                value -= knightSquareBlack[square];
+                positionValue -= knightSquareBlack[square];
                 knightsBlack++;
             }
             else if (stone == Chess.WHITE_BISHOP) {
-                value += bishopSquareWhite[square];
+                positionValue += bishopSquareWhite[square];
                 bishopsWhite++;
             }
             else if (stone == Chess.BLACK_BISHOP) {
-                value -= bishopSquareBlack[square];
+                positionValue -= bishopSquareBlack[square];
                 bishopsBlack++;
             }
             else if (stone == Chess.WHITE_ROOK) {
-                value += rookSquareWhite[square];
+                positionValue += rookSquareWhite[square];
                 rooksWhite++;
             }
             else if (stone == Chess.BLACK_ROOK) {
-                value -= rookSquareBlack[square];
+                positionValue -= rookSquareBlack[square];
                 rooksBlack++;
             }
             else if (stone == Chess.WHITE_QUEEN) {
-                value += queenSquareWhite[square];
+                positionValue += queenSquareWhite[square];
                 queensWhite++;
             }
             else if (stone == Chess.BLACK_QUEEN) {
-                value -= queenSquareBlack[square];
+                positionValue -= queenSquareBlack[square];
                 queensBlack++;
             }
             else if (stone == Chess.WHITE_KING) {
@@ -241,7 +241,6 @@ public class ChessUtil {
                 blackKingSqi = square;
             }
         }
-
 
         //Check endgame
         boolean whiteEndGame = (queensWhite == 0 && rooksWhite <= 1)
@@ -255,16 +254,19 @@ public class ChessUtil {
         boolean endGame = whiteEndGame && blackEndGame;
 
         if (endGame) {
-            value += kingSquareEndGameWhite[whiteKingSqi];
-            value -= kingSquareEndGameBlack[blackKingSqi];
+            positionValue += kingSquareEndGameWhite[whiteKingSqi];
+            positionValue -= kingSquareEndGameBlack[blackKingSqi];
         }
         else {
-            value += kingSquareOpeningWhite[whiteKingSqi];
-            value -= kingSquareOpeningBlack[blackKingSqi];
+            positionValue += kingSquareOpeningWhite[whiteKingSqi];
+            positionValue -= kingSquareOpeningBlack[blackKingSqi];
         }
 
-        */
+        if (player == -1) {
+            positionValue *= -1;
+        }
 
+        int value = materialValue + positionValue;
 
         //TODO Deal with stalemate
 

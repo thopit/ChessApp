@@ -60,6 +60,9 @@ public class ChessController {
                     try {
                         //System.out.println(ChessUtil.evaluate(position, 1));
                         position.doMove(move);
+
+
+                        gameScreen.updateEvaluation();
                         //System.out.println(ChessUtil.evaluate(position, 1));
                         //System.out.println();
                         return true;
@@ -82,6 +85,8 @@ public class ChessController {
         } catch (IllegalMoveException e) {
             e.printStackTrace();
         }
+
+        gameScreen.updateEvaluation();
     }
 
     private short getMove(int stone, int startSqi, int endSqi) {

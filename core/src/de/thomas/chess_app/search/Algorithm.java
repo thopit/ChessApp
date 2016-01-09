@@ -55,7 +55,7 @@ public class Algorithm {
 
             DebugHelper.debug("Checking move: " + Move.getString(move), 2);
 
-            if (Move.getString(move).equals("h5xe5")) {
+            if (Move.getString(move).equals("b1-c3")) {
                 System.out.println("DEBUG");
             }
 
@@ -85,6 +85,11 @@ public class Algorithm {
                 break;
             }
             */
+        }
+
+        //zugzwang (imminent mate)
+        if (bestMove == 0 && moves.length > 0) {
+            bestMove = moves[0];
         }
 
         DebugHelper.debug("Best move: " + Move.getString(bestMove) + " | " + bestResult, 2);

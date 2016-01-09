@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector3;
@@ -14,8 +15,8 @@ import java.util.Map;
 
 import chesspresso.Chess;
 import chesspresso.game.Game;
-import chesspresso.move.Move;
 import chesspresso.position.Position;
+import de.thomas.chess_app.util.ChessUtil;
 
 
 public class GameScreen implements Screen {
@@ -40,6 +41,8 @@ public class GameScreen implements Screen {
     private Texture pawnWhite;
     private Texture pawnBlack;
 
+    private BitmapFont font;
+
     private Map<Short, Texture> textureMap;
 
     private GridPoint2 selectedPosition;
@@ -48,6 +51,9 @@ public class GameScreen implements Screen {
     private final int HEIGHT = 1280;
     private final int Y_SHIFT = 240;//560;
     private final int SQUARE_SIZE = 90;
+
+    private String whiteEvaluation;
+    private String blackEvaluation;
 
     private Game chessGame;
 
@@ -79,6 +85,8 @@ public class GameScreen implements Screen {
         pawnWhite = new Texture("pawn_white.png");
         pawnBlack = new Texture("pawn_black.png");
 
+        font = new BitmapFont(Gdx.files.internal("arial32.fnt"), false);
+
         textureMap = new HashMap<Short, Texture>();
         textureMap.put(Chess.WHITE_KING, kingWhite);
         textureMap.put(Chess.BLACK_KING, kingBlack);
@@ -94,6 +102,9 @@ public class GameScreen implements Screen {
         textureMap.put(Chess.BLACK_PAWN, pawnBlack);
 
         selectedPosition = null;
+
+        whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
+        blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(),- 1));
     }
 
     @Override
@@ -128,6 +139,9 @@ public class GameScreen implements Screen {
                 }
             }
         }
+
+        font.draw(batch, "White advantage: " + whiteEvaluation, 111, 111);
+        font.draw(batch, "Black advantage: " + blackEvaluation, 111, 81);
 
         batch.end();
     }
@@ -178,4 +192,9 @@ public class GameScreen implements Screen {
         this.selectedPosition = selectedPosition;
     }
 
+
+    public void updateEvaluation() {
+        whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
+        blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), -1));
+    }
 }
