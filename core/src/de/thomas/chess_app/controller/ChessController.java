@@ -15,9 +15,8 @@ public class ChessController {
     private Game chessGame;
     private GameScreen gameScreen;
 
-    public ChessController(Game chessGame, GameScreen gameScreen) {
+    public ChessController(Game chessGame) {
         this.chessGame = chessGame;
-        this.gameScreen = gameScreen;
     }
 
     public void trySelect(int posX, int posY) {
@@ -117,5 +116,9 @@ public class ChessController {
         }
 
         return move;
+    }
+
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
     }
 }

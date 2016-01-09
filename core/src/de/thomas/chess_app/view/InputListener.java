@@ -57,7 +57,7 @@ public class InputListener implements InputProcessor {
             }
         }
 
-        return true;
+        return false;
     }
 
     @Override

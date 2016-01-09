@@ -2,12 +2,14 @@ package de.thomas.chess_app;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import de.thomas.chess_app.controller.ChessController;
 import de.thomas.chess_app.view.GameScreen;
 import de.thomas.chess_app.view.InputListener;
+import de.thomas.chess_app.view.TestScreen;
 
 public class ChessMain extends Game {
 	SpriteBatch batch;
@@ -17,12 +19,17 @@ public class ChessMain extends Game {
 	public void create () {
         chesspresso.game.Game chessGame = new chesspresso.game.Game();
 
-        GameScreen gameScreen = new GameScreen(chessGame);
+        InputMultiplexer multiplexer = new InputMultiplexer();
 
-        ChessController controller = new ChessController(chessGame, gameScreen);
+        ChessController controller = new ChessController(chessGame);
+        GameScreen gameScreen = new GameScreen(chessGame, multiplexer, controller);
+        controller.setGameScreen(gameScreen);
+
         InputListener listener = new InputListener(controller);
-        Gdx.input.setInputProcessor(listener);
+        multiplexer.addProcessor(listener);
+        Gdx.input.setInputProcessor(multiplexer);
 
 		setScreen(gameScreen);
+        //setScreen(new TestScreen());
 	}
 }

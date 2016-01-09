@@ -1,14 +1,23 @@
 package de.thomas.chess_app.view;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +25,13 @@ import java.util.Map;
 import chesspresso.Chess;
 import chesspresso.game.Game;
 import chesspresso.position.Position;
+import de.thomas.chess_app.controller.ChessController;
 import de.thomas.chess_app.util.ChessUtil;
 
 
 public class GameScreen implements Screen {
     private SpriteBatch batch;
+    private Stage stage;
 
     private OrthographicCamera camera;
 
@@ -56,9 +67,13 @@ public class GameScreen implements Screen {
     private String blackEvaluation;
 
     private Game chessGame;
+    private InputMultiplexer multiplexer;
+    private ChessController controller;
 
-    public GameScreen(Game chessGame) {
+    public GameScreen(Game chessGame, InputMultiplexer multiplexer, ChessController controller) {
         this.chessGame = chessGame;
+        this.multiplexer = multiplexer;
+        this.controller = controller;
     }
 
     @Override
@@ -67,6 +82,18 @@ public class GameScreen implements Screen {
         camera.setToOrtho(false, WIDTH, HEIGHT);
 
         batch = new SpriteBatch();
+        stage = new Stage();
+        multiplexer.addProcessor(stage);
+
+        Table table = new Table();
+        table.setDebug(true);
+        table.setBounds(350, 50, 200, 100);
+        stage.addActor(table);
+
+        final TextButton button = new TextButton("Move", createSkin());
+        table.add(button).width(100).height(50);
+
+        button.addListener(new ButtonListener(controller));
 
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
@@ -141,9 +168,12 @@ public class GameScreen implements Screen {
         }
 
         font.draw(batch, "White advantage: " + whiteEvaluation, 111, 111);
-        font.draw(batch, "Black advantage: " + blackEvaluation, 111, 81);
+        //font.draw(batch, "Black advantage: " + blackEvaluation, 111, 81);
 
         batch.end();
+
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
@@ -168,7 +198,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        stage.dispose();
     }
 
     public int getSqi(int posX, int posY) {
@@ -196,5 +227,28 @@ public class GameScreen implements Screen {
     public void updateEvaluation() {
         whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
         blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), -1));
+    }
+
+    private Skin createSkin() {
+        Skin skin = new Skin();
+
+        // Generate a 1x1 white texture and store it in the skin named "white".
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("white", new Texture(pixmap));
+
+        // Store the default libgdx font under the name "default".
+        skin.add("default", new BitmapFont());
+
+        // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
+        textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
+        textButtonStyle.font = skin.getFont("default");
+        skin.add("default", textButtonStyle);
+        return skin;
     }
 }
