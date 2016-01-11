@@ -15,9 +15,6 @@ public class ButtonListener extends ChangeListener {
 
     @Override
     public void changed(ChangeEvent event, Actor actor) {
-        TextButton button = (TextButton) actor;
-        //button.setChecked(true);
         chessController.computerMove();
-        button.setChecked(false);
     }
 }

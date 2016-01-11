@@ -12,8 +12,6 @@ import de.thomas.chess_app.view.InputListener;
 import de.thomas.chess_app.view.TestScreen;
 
 public class ChessMain extends Game {
-	SpriteBatch batch;
-	Texture img;
 	
 	@Override
 	public void create () {
