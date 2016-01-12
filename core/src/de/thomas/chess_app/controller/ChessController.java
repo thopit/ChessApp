@@ -121,4 +121,8 @@ public class ChessController {
     public void setGameScreen(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
     }
+
+    public void revertMove() {
+        chessGame.goBack();
+    }
 }

@@ -12,12 +12,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,13 +85,16 @@ public class GameScreen implements Screen {
 
         Table table = new Table();
         table.setDebug(true);
-        table.setBounds(350, 50, 200, 100);
+        table.setBounds(320, 50, 200, 100);
         stage.addActor(table);
 
-        final TextButton button = new TextButton("Move", createSkin());
-        table.add(button).width(100).height(50);
+        final TextButton moveButton = new TextButton("Move", createSkin());
+        table.add(moveButton).width(100).height(50);
+        final TextButton revertButton = new TextButton("Revert", createSkin());
+        table.add(revertButton).width(100).height(50);
 
-        button.addListener(new ButtonListener(controller));
+        moveButton.addListener(new MoveButtonListener(controller));
+        revertButton.addListener(new RevertButtonListener(controller));
 
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
