@@ -164,6 +164,11 @@ public class ChessUtil {
             return mateCalculator(position, player);
         }
 
+        //TODO add 3 moves repetition
+        if (position.isStaleMate() || position.isTerminal()) {
+            return 0;
+        }
+
         int materialValue = position.getMaterial();
 
         //Normalize to adjust to Chesspresso
@@ -267,8 +272,6 @@ public class ChessUtil {
         }
 
         int value = materialValue + positionValue;
-
-        //TODO Deal with stalemate
 
         return value;
     }
