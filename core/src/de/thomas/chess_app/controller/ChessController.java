@@ -155,6 +155,19 @@ public class ChessController {
         gameScreen.setChessGame(chessGame);
     }
 
+    public void saveGame(File file) {
+        //Needed for PGNWriter
+        chessGame.getModel().getHeaderModel().setTag("Result", "0-0");
+
+        try {
+            PrintWriter writer = new PrintWriter(new File(file.getAbsolutePath()));
+            new PGNWriter(writer).write(chessGame.getModel());
+            writer.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void goForward() {
         chessGame.goForward();
     }
