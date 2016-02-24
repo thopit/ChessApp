@@ -230,6 +230,10 @@ public class GameScreen implements Screen {
         blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), -1));
     }
 
+    public void setChessGame(Game chessGame) {
+        this.chessGame = chessGame;
+    }
+
     private Skin createSkin() {
         Skin skin = new Skin();
 

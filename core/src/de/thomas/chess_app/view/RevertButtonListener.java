@@ -14,6 +14,6 @@ public class RevertButtonListener extends ChangeListener {
 
     @Override
     public void changed(ChangeEvent event, Actor actor) {
-        chessController.revertMove();
+        chessController.goBack();
     }
 }

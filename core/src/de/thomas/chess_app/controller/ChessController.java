@@ -2,10 +2,23 @@ package de.thomas.chess_app.controller;
 
 import com.badlogic.gdx.math.GridPoint2;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+
 import chesspresso.Chess;
 import chesspresso.game.Game;
+import chesspresso.game.GameHeaderModel;
+import chesspresso.game.GameModel;
 import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
+import chesspresso.pgn.PGNReader;
+import chesspresso.pgn.PGNSyntaxError;
+import chesspresso.pgn.PGNWriter;
 import chesspresso.position.Position;
 import de.thomas.chess_app.search.Algorithm;
 import de.thomas.chess_app.util.ChessUtil;
@@ -122,7 +135,28 @@ public class ChessController {
         this.gameScreen = gameScreen;
     }
 
-    public void revertMove() {
+    public void loadGame(File file) {
+        Game game = null;
+
+        try {
+            game = new PGNReader(new FileInputStream(file), "Game").parseGame();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (PGNSyntaxError pgnSyntaxError) {
+            pgnSyntaxError.printStackTrace();
+        }
+
+        chessGame = game;
+        gameScreen.setChessGame(chessGame);
+    }
+
+    public void goForward() {
+        chessGame.goForward();
+    }
+
+    public void goBack() {
         chessGame.goBack();
     }
 }
