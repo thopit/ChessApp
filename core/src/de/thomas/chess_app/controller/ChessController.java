@@ -142,10 +142,13 @@ public class ChessController {
             game = new PGNReader(new FileInputStream(file), "Game").parseGame();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return;
         } catch (IOException e) {
             e.printStackTrace();
+            return;
         } catch (PGNSyntaxError pgnSyntaxError) {
             pgnSyntaxError.printStackTrace();
+            return;
         }
 
         chessGame = game;
