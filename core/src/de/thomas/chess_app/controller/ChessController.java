@@ -157,7 +157,7 @@ public class ChessController {
 
     public void saveGame(File file) {
         //Needed for PGNWriter
-        chessGame.getModel().getHeaderModel().setTag("Result", "0-0");
+        chessGame.getModel().getHeaderModel().setTag("Result", "*");
 
         try {
             PrintWriter writer = new PrintWriter(new File(file.getAbsolutePath()));
