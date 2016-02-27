@@ -85,16 +85,25 @@ public class GameScreen implements Screen {
 
         Table table = new Table();
         table.setDebug(true);
-        table.setBounds(320, 50, 200, 100);
+        table.setBounds(280, 30, 240, 120);
+
         stage.addActor(table);
 
+        table.row();
+
         final TextButton moveButton = new TextButton("Move", createSkin());
-        table.add(moveButton).width(100).height(50);
-        final TextButton revertButton = new TextButton("Revert", createSkin());
-        table.add(revertButton).width(100).height(50);
+        table.add(moveButton).width(100).height(50).spaceBottom(10).center();
+
+        table.row();
+
+        final TextButton undoButton = new TextButton("Undo", createSkin());
+        table.add(undoButton).width(100).height(50).spaceBottom(10);
+        final TextButton redoButton = new TextButton("Redo", createSkin());
+        table.add(redoButton).width(100).height(50).spaceBottom(10);
 
         moveButton.addListener(new MoveButtonListener(controller));
-        revertButton.addListener(new RevertButtonListener(controller));
+        undoButton.addListener(new UndoButtonListener(controller));
+        redoButton.addListener(new RedoButtonListener(controller));
 
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
