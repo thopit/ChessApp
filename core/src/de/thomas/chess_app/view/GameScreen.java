@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +59,7 @@ public class GameScreen implements Screen {
 
     private final int WIDTH = 720;
     private final int HEIGHT = 1280;
-    private final int Y_SHIFT = 240;//560;
+    private final int Y_SHIFT = 420; //560 is maximum
     private final int SQUARE_SIZE = 90;
 
     private String whiteEvaluation;
@@ -84,26 +85,44 @@ public class GameScreen implements Screen {
         multiplexer.addProcessor(stage);
 
         Table table = new Table();
-        table.setDebug(true);
-        table.setBounds(280, 30, 240, 120);
+        //table.setDebug(true);
+        table.setBounds(260, 100, 200, 120);
 
         stage.addActor(table);
 
         table.row();
 
-        final TextButton moveButton = new TextButton("Move", createSkin());
-        table.add(moveButton).width(100).height(50).spaceBottom(10).center();
+        final TextButton moveButton = new TextButton("Move", createTextButtonSkin());
+        table.add(moveButton).width(100).height(50).spaceBottom(10).expandX();
 
         table.row();
 
-        final TextButton undoButton = new TextButton("Undo", createSkin());
+        final TextButton undoButton = new TextButton("Undo", createTextButtonSkin());
         table.add(undoButton).width(100).height(50).spaceBottom(10);
-        final TextButton redoButton = new TextButton("Redo", createSkin());
+        final TextButton redoButton = new TextButton("Redo", createTextButtonSkin());
         table.add(redoButton).width(100).height(50).spaceBottom(10);
+
+        table.row();
+
+        final TextField textField = new TextField("Adams.pgn", createTextFieldSkin());
+        table.add(textField).width(100).height(50).spaceBottom(10);
+
+        table.row();
+        final TextButton loadButton = new TextButton("Load", createTextButtonSkin());
+        table.add(loadButton).width(100).height(50).spaceBottom(10);
+        final TextButton saveButton = new TextButton("Save", createTextButtonSkin());
+        table.add(saveButton).width(100).height(50).spaceBottom(10);
+
+        table.row();
+        final TextButton newButton = new TextButton("New", createTextButtonSkin());
+        table.add(newButton).width(100).height(50);
 
         moveButton.addListener(new MoveButtonListener(controller));
         undoButton.addListener(new UndoButtonListener(controller));
         redoButton.addListener(new RedoButtonListener(controller));
+        loadButton.addListener(new LoadButtonListener(controller, textField));
+        saveButton.addListener(new SaveButtonListener(controller, textField));
+        newButton.addListener(new NewButtonListener(controller));
 
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
@@ -177,7 +196,7 @@ public class GameScreen implements Screen {
             }
         }
 
-        font.draw(batch, "White advantage: " + whiteEvaluation, 111, 111);
+        font.draw(batch, "White advantage: " + whiteEvaluation, 20, 220);
         //font.draw(batch, "Black advantage: " + blackEvaluation, 111, 81);
 
         batch.end();
@@ -243,7 +262,7 @@ public class GameScreen implements Screen {
         this.chessGame = chessGame;
     }
 
-    private Skin createSkin() {
+    private Skin createTextButtonSkin() {
         Skin skin = new Skin();
 
         // Generate a 1x1 white texture and store it in the skin named "white".
@@ -263,6 +282,24 @@ public class GameScreen implements Screen {
         textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
         textButtonStyle.font = skin.getFont("default");
         skin.add("default", textButtonStyle);
+        return skin;
+    }
+
+    private Skin createTextFieldSkin() {
+        Skin skin = new Skin();
+
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.WHITE);
+        pixmap.fill();
+        skin.add("white", new Texture(pixmap));
+
+        skin.add("default", new BitmapFont());
+
+        TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
+        textFieldStyle.font = skin.getFont("default");
+        textFieldStyle.fontColor = Color.BLACK;
+
+        skin.add("default", textFieldStyle);
         return skin;
     }
 }

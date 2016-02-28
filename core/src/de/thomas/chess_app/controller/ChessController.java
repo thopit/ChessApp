@@ -153,6 +153,7 @@ public class ChessController {
 
         chessGame = game;
         gameScreen.setChessGame(chessGame);
+        gameScreen.updateEvaluation();
     }
 
     public void saveGame(File file) {
@@ -168,11 +169,20 @@ public class ChessController {
         }
     }
 
+    public void newGame() {
+        Game game = new Game();
+        chessGame = game;
+        gameScreen.setChessGame(chessGame);
+        gameScreen.updateEvaluation();
+    }
+
     public void goForward() {
         chessGame.goForward();
+        gameScreen.updateEvaluation();
     }
 
     public void goBack() {
         chessGame.goBack();
+        gameScreen.updateEvaluation();
     }
 }
