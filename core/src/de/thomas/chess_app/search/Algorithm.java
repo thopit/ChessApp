@@ -60,6 +60,8 @@ public class Algorithm {
             }
 
             Tuple<Integer, List<Short>> resultTuple = alphaBeta(testPosition, depth, alpha, beta, -player);
+
+
             int result = -resultTuple.x;
             List<Short> followingMoves = resultTuple.y;
 
@@ -109,13 +111,6 @@ public class Algorithm {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-
-            /*
-            DebugHelper.debug("Material value for player " + player + ": " + ChessUtil.evaluate(position, player), 3, MAX_DEPTH - depth);
-
-            return new Tuple<Integer, List<Short>>(ChessUtil.evaluate(position, player), new ArrayList<Short>());
-            */
-
             Tuple<Integer, List<Short>> result = qSearch(position, depth, alpha, beta, player);
             DebugHelper.debug("Material value for player " + player + ": " + result.x, 3, MAX_DEPTH - depth);
 
@@ -129,12 +124,10 @@ public class Algorithm {
         List<Short> bestMoveList = new ArrayList<Short>();
 
         for (short move : moves) {
-            Position testPosition = new Position(position);
-
             DebugHelper.debug("Following move: " + Move.getString(move), 3, MAX_DEPTH - depth);
 
             try {
-                testPosition.doMove(move);
+                position.doMove(move);
             } catch (IllegalMoveException e) {
                 //This should never happen
                 e.printStackTrace();
@@ -144,7 +137,9 @@ public class Algorithm {
             positionsChecked++;
 
 
-            Tuple<Integer, List<Short>> result = alphaBeta(testPosition, depth - 1, -beta, -alpha, -player);
+            Tuple<Integer, List<Short>> result = alphaBeta(position, depth - 1, -beta, -alpha, -player);
+            position.undoMove();
+
             int value = -result.x;
 
             if (value > bestValue) {
@@ -182,17 +177,19 @@ public class Algorithm {
         for (short move : moves) {
             DebugHelper.debug("Quiescent move: " + Move.getString(move), 3, MAX_DEPTH - depth);
 
-            Position testPosition = new Position(position);
-
             try {
-                testPosition.doMove(move);
+                position.doMove(move);
             } catch (IllegalMoveException e) {
                 //This should never happen
                 e.printStackTrace();
                 System.exit(1);
             }
 
-            Tuple<Integer, List<Short>> result = qSearch(testPosition, depth - 1, -beta, -alpha, -player);
+            positionsChecked++;
+
+            Tuple<Integer, List<Short>> result = qSearch(position, depth - 1, -beta, -alpha, -player);
+            position.undoMove();
+
             int value = -result.x;
 
             if (value >= beta) {
