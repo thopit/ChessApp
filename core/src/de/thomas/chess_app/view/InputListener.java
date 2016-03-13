@@ -62,6 +62,18 @@ public class InputListener implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        if (lastPosX != -1 || lastPosY != -1) {
+            if (controller.tryMove(lastPosX, lastPosY, screenX, screenY)) {
+                lastPosX = -1;
+                lastPosY = -1;
+            }
+            else {
+                controller.trySelect(screenX, screenY);
+
+                lastPosX = screenX;
+                lastPosY = screenY;
+            }
+        }
         return false;
     }
 

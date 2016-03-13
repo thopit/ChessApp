@@ -45,11 +45,13 @@ public class ChessController {
 
         if (piece != 0 && Chess.stoneToColor(piece) == position.getToPlay()) {
             gameScreen.setSelectedPosition(point);
+            gameScreen.setSelectedStone(piece);
         }
     }
 
     public boolean tryMove(int startX, int startY, int endX, int endY) {
         gameScreen.setSelectedPosition(null);
+        gameScreen.setSelectedStone(0);
 
         int startSqi = gameScreen.getSqi(startX, startY);
         int endSqi = gameScreen.getSqi(endX, endY);

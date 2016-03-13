@@ -56,6 +56,7 @@ public class GameScreen implements Screen {
     private Map<Short, Texture> textureMap;
 
     private GridPoint2 selectedPosition;
+    private int selectedStone;
 
     private final int WIDTH = 720;
     private final int HEIGHT = 1280;
@@ -158,6 +159,7 @@ public class GameScreen implements Screen {
         textureMap.put(Chess.BLACK_PAWN, pawnBlack);
 
         selectedPosition = null;
+        selectedStone = 0;
 
         whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
         blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(),- 1));
@@ -183,21 +185,23 @@ public class GameScreen implements Screen {
                    batch.draw(fieldWhite, x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
                 }
 
-                //Draw selection display
-                if (selectedPosition != null && x == selectedPosition.x && y == selectedPosition.y) {
-                    batch.draw(fieldSelected, x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
+                Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+                if (selectedStone != 0) {
+                    batch.draw(textureMap.get((short) selectedStone), mousePos.x - SQUARE_SIZE / 2, mousePos.y - SQUARE_SIZE / 2);
                 }
 
                 short stone = (short) position.getStone(Chess.coorToSqi(x, y));
 
                 if (stone != 0) {
-                    batch.draw(textureMap.get(stone), x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
+                    if (selectedPosition == null ||  (selectedPosition != null && (x != selectedPosition.x || y != selectedPosition.y))) {
+                        batch.draw(textureMap.get(stone), x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
+                    }
                 }
             }
         }
 
         font.draw(batch, "White advantage: " + whiteEvaluation, 20, 220);
-        //font.draw(batch, "Black advantage: " + blackEvaluation, 111, 81);
 
         batch.end();
 
@@ -252,6 +256,9 @@ public class GameScreen implements Screen {
         this.selectedPosition = selectedPosition;
     }
 
+    public void setSelectedStone(int selectedStone) {
+        this.selectedStone = selectedStone;
+    }
 
     public void updateEvaluation() {
         whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
