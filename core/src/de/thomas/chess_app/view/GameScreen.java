@@ -24,6 +24,7 @@ import java.util.Map;
 import chesspresso.Chess;
 import chesspresso.game.Game;
 import chesspresso.position.Position;
+import de.thomas.chess_app.ChessMain;
 import de.thomas.chess_app.controller.ChessController;
 import de.thomas.chess_app.util.ChessUtil;
 
@@ -64,7 +65,6 @@ public class GameScreen implements Screen {
     private final int SQUARE_SIZE = 90;
 
     private String whiteEvaluation;
-    private String blackEvaluation;
 
     private Game chessGame;
     private InputMultiplexer multiplexer;
@@ -85,45 +85,64 @@ public class GameScreen implements Screen {
         stage = new Stage();
         multiplexer.addProcessor(stage);
 
-        Table table = new Table();
-        //table.setDebug(true);
-        table.setBounds(260, 100, 200, 120);
 
-        stage.addActor(table);
+        if (ChessMain.TEST_MODE) {
+            Table table = new Table();
+            //table.setDebug(true);
+            table.setBounds(260, 100, 200, 120);
 
-        table.row();
+            stage.addActor(table);
 
-        final TextButton moveButton = new TextButton("Move", createTextButtonSkin());
-        table.add(moveButton).width(100).height(50).spaceBottom(10).expandX();
+            table.row();
 
-        table.row();
+            final TextButton moveButton = new TextButton("Move", createTextButtonSkin());
+            table.add(moveButton).width(100).height(50).spaceBottom(10).expandX();
 
-        final TextButton undoButton = new TextButton("Undo", createTextButtonSkin());
-        table.add(undoButton).width(100).height(50).spaceBottom(10);
-        final TextButton redoButton = new TextButton("Redo", createTextButtonSkin());
-        table.add(redoButton).width(100).height(50).spaceBottom(10);
+            table.row();
 
-        table.row();
+            final TextButton undoButton = new TextButton("Undo", createTextButtonSkin());
+            table.add(undoButton).width(100).height(50).spaceBottom(10);
+            final TextButton redoButton = new TextButton("Redo", createTextButtonSkin());
+            table.add(redoButton).width(100).height(50).spaceBottom(10);
 
-        final TextField textField = new TextField("Adams.pgn", createTextFieldSkin());
-        table.add(textField).width(100).height(50).spaceBottom(10);
+            table.row();
 
-        table.row();
-        final TextButton loadButton = new TextButton("Load", createTextButtonSkin());
-        table.add(loadButton).width(100).height(50).spaceBottom(10);
-        final TextButton saveButton = new TextButton("Save", createTextButtonSkin());
-        table.add(saveButton).width(100).height(50).spaceBottom(10);
+            final TextField textField = new TextField("Adams.pgn", createTextFieldSkin());
+            table.add(textField).width(100).height(50).spaceBottom(10);
 
-        table.row();
-        final TextButton newButton = new TextButton("New", createTextButtonSkin());
-        table.add(newButton).width(100).height(50);
+            table.row();
+            final TextButton loadButton = new TextButton("Load", createTextButtonSkin());
+            table.add(loadButton).width(100).height(50).spaceBottom(10);
+            final TextButton saveButton = new TextButton("Save", createTextButtonSkin());
+            table.add(saveButton).width(100).height(50).spaceBottom(10);
 
-        moveButton.addListener(new MoveButtonListener(controller));
-        undoButton.addListener(new UndoButtonListener(controller));
-        redoButton.addListener(new RedoButtonListener(controller));
-        loadButton.addListener(new LoadButtonListener(controller, textField));
-        saveButton.addListener(new SaveButtonListener(controller, textField));
-        newButton.addListener(new NewButtonListener(controller));
+            table.row();
+            final TextButton newButton = new TextButton("New", createTextButtonSkin());
+            table.add(newButton).width(100).height(50);
+
+            moveButton.addListener(new MoveButtonListener(controller));
+            undoButton.addListener(new UndoButtonListener(controller));
+            redoButton.addListener(new RedoButtonListener(controller));
+            loadButton.addListener(new LoadButtonListener(controller, textField));
+            saveButton.addListener(new SaveButtonListener(controller, textField));
+            newButton.addListener(new NewButtonListener(controller));
+        }
+        else {
+            Table table = new Table();
+            table.setBounds(320, 100, 200, 120);
+
+            stage.addActor(table);
+
+            table.row();
+            final TextButton moveButton = new TextButton("Move", createTextButtonSkin());
+            table.add(moveButton).width(200).height(100).spaceBottom(20).expandX();
+            table.row();
+            final TextButton newButton = new TextButton("New", createTextButtonSkin());
+            table.add(newButton).width(200).height(100);
+
+            moveButton.addListener(new MoveButtonListener(controller));
+            newButton.addListener(new NewButtonListener(controller));
+        }
 
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
@@ -162,7 +181,6 @@ public class GameScreen implements Screen {
         selectedStone = 0;
 
         whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
-        blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(),- 1));
     }
 
     @Override
@@ -262,7 +280,6 @@ public class GameScreen implements Screen {
 
     public void updateEvaluation() {
         whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
-        blackEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), -1));
     }
 
     public void setChessGame(Game chessGame) {

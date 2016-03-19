@@ -12,6 +12,7 @@ import de.thomas.chess_app.view.InputListener;
 import de.thomas.chess_app.view.TestScreen;
 
 public class ChessMain extends Game {
+    public static final boolean TEST_MODE = false;
 	
 	@Override
 	public void create () {
