@@ -1,5 +1,7 @@
 package de.thomas.chess_app.controller;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 
 import java.io.File;
@@ -22,6 +24,7 @@ import chesspresso.pgn.PGNWriter;
 import chesspresso.position.Position;
 import de.thomas.chess_app.search.Algorithm;
 import de.thomas.chess_app.util.ChessUtil;
+import de.thomas.chess_app.util.PromotionListener;
 import de.thomas.chess_app.view.GameScreen;
 
 public class ChessController {
@@ -108,6 +111,8 @@ public class ChessController {
 
         short move;
 
+
+
         //Castling
         if (stone == Chess.WHITE_KING && startSqi == Chess.E1 && endSqi == Chess.G1) {
             move = Move.getShortCastle(Chess.WHITE);
@@ -124,6 +129,29 @@ public class ChessController {
         //En passant
         else if (position.getPiece(startSqi) == Chess.PAWN && position.getPiece(endSqi) == 0 && startSqi % 2 != endSqi % 2) {
             move = Move.getEPMove(startSqi, endSqi);
+        }
+        //Promotion
+        else if (stone == Chess.WHITE_PAWN && Chess.sqiToRow(startSqi) == 6 && Chess.sqiToRow(endSqi) == 7) {
+            PromotionListener listener = new PromotionListener();
+
+            Gdx.input.getTextInput(listener, "Choose promotion", "", "Q, R, N, B");
+            String input = listener.getText();
+            System.out.println("Input: " + input);
+
+            boolean capturing = position.getPiece(endSqi) != 0;
+
+            if (input.equalsIgnoreCase("R") || input.equalsIgnoreCase("T")) {
+                move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.ROOK);
+            }
+            else if (input.equalsIgnoreCase("N") || input.equalsIgnoreCase("S")) {
+                move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.KNIGHT);
+            }
+            else if (input.equalsIgnoreCase("B") || input.equalsIgnoreCase("L")) {
+                move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.BISHOP);
+            }
+            else {
+                move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.QUEEN);
+            }
         }
         else {
             boolean capturing = position.getPiece(endSqi) != 0;
