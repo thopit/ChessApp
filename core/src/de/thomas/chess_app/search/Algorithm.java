@@ -35,8 +35,6 @@ public class Algorithm {
         }
 
         int bestResult = -ChessUtil.MAXIMUM_VALUE;
-        int alpha = -ChessUtil.MAXIMUM_VALUE;
-        int beta = ChessUtil.MAXIMUM_VALUE;
 
         short bestMove = 0;
 
@@ -46,7 +44,6 @@ public class Algorithm {
             try {
                 testPosition.doMove(move);
             } catch (IllegalMoveException e) {
-                //This should never happen
                 e.printStackTrace();
                 System.exit(1);
             }
@@ -55,38 +52,14 @@ public class Algorithm {
 
             DebugHelper.debug("Checking move: " + Move.getString(move), 2);
 
-            if (Move.getString(move).equals("b1-c3")) {
-                System.out.println("DEBUG");
-            }
-
-            Tuple<Integer, List<Short>> resultTuple = alphaBeta(testPosition, depth, alpha, beta, -player);
-
-
-            int result = -resultTuple.x;
-            List<Short> followingMoves = resultTuple.y;
-
+            int result = -alphaBeta(testPosition, depth, -ChessUtil.MAXIMUM_VALUE, ChessUtil.MAXIMUM_VALUE, -player);
 
             DebugHelper.debug("Result: " + result, 2);
-            Collections.reverse(followingMoves);
-
-            DebugHelper.debug(Move.getString(move), 2);
-            for (Short m : followingMoves) {
-                DebugHelper.debug(Move.getString(m), 2);
-            }
 
             if (result > bestResult) {
                 bestResult = result;
                 bestMove = move;
             }
-
-            //TODO check how to to cutoffs
-            /*
-            alpha = Math.max(alpha, result);
-
-            if (alpha >= beta) {
-                break;
-            }
-            */
         }
 
         //zugzwang (imminent mate)
@@ -107,21 +80,14 @@ public class Algorithm {
         return bestMove;
     }
 
-    private static Tuple<Integer, List<Short>> alphaBeta(Position position, int depth, int alpha, int beta, int player) {
+    private static int alphaBeta(Position position, int depth, int alpha, int beta, int player) {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-            Tuple<Integer, List<Short>> result = qSearch(position, depth, alpha, beta, player);
-            DebugHelper.debug("Material value for player " + player + ": " + result.x, 3, MAX_DEPTH - depth);
-
+            int result = qSearch(position, depth, alpha, beta, player);
+            DebugHelper.debug("Material value for player " + player + ": " + result, 3, MAX_DEPTH - depth);
             return result;
         }
-
-        //TODO order moves for faster algorithm
-
-        int bestValue = Integer.MIN_VALUE;
-        short bestMove = 0;
-        List<Short> bestMoveList = new ArrayList<Short>();
 
         for (short move : moves) {
             DebugHelper.debug("Following move: " + Move.getString(move), 3, MAX_DEPTH - depth);
@@ -129,44 +95,34 @@ public class Algorithm {
             try {
                 position.doMove(move);
             } catch (IllegalMoveException e) {
-                //This should never happen
                 e.printStackTrace();
                 System.exit(1);
             }
 
             positionsChecked++;
 
-
-            Tuple<Integer, List<Short>> result = alphaBeta(position, depth - 1, -beta, -alpha, -player);
+            int score = -alphaBeta(position, depth - 1, -beta, -alpha, -player);
             position.undoMove();
 
-            int value = -result.x;
-
-            if (value > bestValue) {
-                bestMove = move;
-                bestMoveList = result.y;
+            if (score >= beta) {
+                DebugHelper.debug("Best value: " + beta, 3, MAX_DEPTH - depth);
+                return beta;
             }
-
-            bestValue = Math.max(bestValue, value);
-            alpha = Math.max(alpha, value);
-
-
-            if (alpha >= beta) {
-                break;
+            if (score > alpha) {
+                alpha = score;
             }
         }
 
-        DebugHelper.debug("Best value: " + bestValue, 3, MAX_DEPTH - depth);
-        bestMoveList.add(bestMove);
+        DebugHelper.debug("Best value: " + alpha, 3, MAX_DEPTH - depth);
 
-        return new Tuple<Integer, List<Short>>(bestValue, bestMoveList);
+        return alpha;
     }
 
-    private static Tuple<Integer, List<Short>> qSearch(Position position, int depth, int alpha, int beta, int player) {
+    private static int qSearch(Position position, int depth, int alpha, int beta, int player) {
         int standPat = ChessUtil.evaluate(position, player);
 
         if (standPat >= beta) {
-            return new Tuple<Integer, List<Short>>(standPat, new ArrayList<Short>());
+            return beta;
         }
         if (alpha < standPat) {
             alpha = standPat;
@@ -180,28 +136,23 @@ public class Algorithm {
             try {
                 position.doMove(move);
             } catch (IllegalMoveException e) {
-                //This should never happen
                 e.printStackTrace();
                 System.exit(1);
             }
 
             positionsChecked++;
 
-            Tuple<Integer, List<Short>> result = qSearch(position, depth - 1, -beta, -alpha, -player);
+            int score = -qSearch(position, depth - 1, -beta, -alpha, -player);
             position.undoMove();
 
-            int value = -result.x;
-
-            if (value >= beta) {
-                return new Tuple<Integer, List<Short>>(beta, new ArrayList<Short>());
+            if (score >= beta) {
+                return beta;
             }
-
-            if (value > alpha) {
-                alpha = value;
+            if (score > alpha) {
+                alpha = score;
             }
-
         }
 
-        return new Tuple<Integer, List<Short>>(alpha, new ArrayList<Short>());
+        return alpha;
     }
 }
