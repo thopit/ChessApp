@@ -4,6 +4,8 @@ import chesspresso.Chess;
 import chesspresso.position.Position;
 
 public class ChessUtil {
+    public static final int MAXIMUM_VALUE = 100000000;
+
     private static final int[] pawnSquareBlack = {
             0,  0,  0,  0,  0,  0,  0,  0,
             50, 50, 50, 50, 50, 50, 50, 50,
@@ -281,18 +283,18 @@ public class ChessUtil {
     private static int mateCalculator(Position position, int player) {
         if (position.getToPlay() == 0) {
             if (player == 1) {
-                return -100000000;
+                return -MAXIMUM_VALUE;
             }
             else {
-                return 100000000;
+                return MAXIMUM_VALUE;
             }
         }
         else {
             if (player == 1) {
-                return 100000000;
+                return MAXIMUM_VALUE;
             }
             else {
-                return -100000000;
+                return -MAXIMUM_VALUE;
             }
         }
     }

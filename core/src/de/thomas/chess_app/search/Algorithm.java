@@ -34,9 +34,9 @@ public class Algorithm {
             player = -1;
         }
 
-        int bestResult = -100000000;
-        int alpha = -100000000;
-        int beta = 100000000;
+        int bestResult = -ChessUtil.MAXIMUM_VALUE;
+        int alpha = -ChessUtil.MAXIMUM_VALUE;
+        int beta = ChessUtil.MAXIMUM_VALUE;
 
         short bestMove = 0;
 
