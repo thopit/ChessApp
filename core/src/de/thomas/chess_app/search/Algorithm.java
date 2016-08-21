@@ -1,8 +1,7 @@
 package de.thomas.chess_app.search;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import chesspresso.move.IllegalMoveException;
@@ -10,19 +9,18 @@ import chesspresso.move.Move;
 import chesspresso.position.Position;
 import de.thomas.chess_app.util.ChessUtil;
 import de.thomas.chess_app.util.DebugHelper;
-import de.thomas.chess_app.util.Tuple;
 
 public class Algorithm {
     private static final int MAX_DEPTH = 2;
-    private static int positionsChecked = 0;
+    private static int positionsChecked;
 
-
-    public static short bestMoveAlphaBeta(Position position) {
-        return bestMoveAlphaBeta(position, MAX_DEPTH);
+    public static short bestMoveAlphaBeta(Position position, List<Long> lastPositions) {
+        return bestMoveAlphaBeta(position, MAX_DEPTH, lastPositions);
     }
 
-    public static short bestMoveAlphaBeta(Position position, int depth) {
+    public static short bestMoveAlphaBeta(Position position, int depth, List<Long> lastPositions) {
         long startTime = System.nanoTime();
+        positionsChecked = 0;
 
         short[] moves = position.getAllMoves();
         int player = position.getToPlay();
@@ -48,11 +46,14 @@ public class Algorithm {
                 System.exit(1);
             }
 
+            List<Long> lastPositionsClone = new LinkedList<Long>(lastPositions);
+            lastPositionsClone.add(testPosition.getHashCode());
+
             positionsChecked++;
 
             DebugHelper.debug("Checking move: " + Move.getString(move), 2);
 
-            int result = -alphaBeta(testPosition, depth, -ChessUtil.MAXIMUM_VALUE, ChessUtil.MAXIMUM_VALUE, -player);
+            int result = -alphaBeta(testPosition, depth, -ChessUtil.MAXIMUM_VALUE, ChessUtil.MAXIMUM_VALUE, -player, lastPositionsClone);
 
             DebugHelper.debug("Result: " + result, 2);
 
@@ -80,13 +81,16 @@ public class Algorithm {
         return bestMove;
     }
 
-    private static int alphaBeta(Position position, int depth, int alpha, int beta, int player) {
+    private static int alphaBeta(Position position, int depth, int alpha, int beta, int player, List<Long> lastPositions) {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-            int result = qSearch(position, depth, alpha, beta, player);
+            int result = qSearch(position, depth, alpha, beta, player, lastPositions);
             DebugHelper.debug("Material value for player " + player + ": " + result, 3, MAX_DEPTH - depth);
             return result;
+        }
+        else if (hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
+            return 0;
         }
 
         for (short move : moves) {
@@ -101,7 +105,9 @@ public class Algorithm {
 
             positionsChecked++;
 
-            int score = -alphaBeta(position, depth - 1, -beta, -alpha, -player);
+            List<Long> lastPositionsClone = new LinkedList<Long>(lastPositions);
+            lastPositionsClone.add(position.getHashCode());
+            int score = -alphaBeta(position, depth - 1, -beta, -alpha, -player, lastPositionsClone);
             position.undoMove();
 
             if (score >= beta) {
@@ -118,7 +124,11 @@ public class Algorithm {
         return alpha;
     }
 
-    private static int qSearch(Position position, int depth, int alpha, int beta, int player) {
+    private static int qSearch(Position position, int depth, int alpha, int beta, int player, List<Long> lastPositions) {
+        if (hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
+            return 0;
+        }
+
         int standPat = ChessUtil.evaluate(position, player);
 
         if (standPat >= beta) {
@@ -131,7 +141,7 @@ public class Algorithm {
         short[] moves = position.getAllCapturingMoves();
 
         for (short move : moves) {
-            DebugHelper.debug("Quiescent move: " + Move.getString(move), 3, MAX_DEPTH - depth);
+            DebugHelper.debug("Quiescent move: " + Move.getString(move), 4, MAX_DEPTH - depth);
 
             try {
                 position.doMove(move);
@@ -142,7 +152,9 @@ public class Algorithm {
 
             positionsChecked++;
 
-            int score = -qSearch(position, depth - 1, -beta, -alpha, -player);
+            List<Long> lastPositionsClone = new LinkedList<Long>(lastPositions);
+            lastPositionsClone.add(position.getHashCode());
+            int score = -qSearch(position, depth - 1, -beta, -alpha, -player, lastPositionsClone);
             position.undoMove();
 
             if (score >= beta) {
@@ -154,5 +166,28 @@ public class Algorithm {
         }
 
         return alpha;
+    }
+
+    private static boolean hasThreeFoldRepetition(List<Long> lastPositions, int lastIrreversibleMove) {
+        if (lastIrreversibleMove > 4) {
+            long positionToCheck = lastPositions.get(lastPositions.size() - 1);
+            int repetitionCount = 0;
+
+            for (int k = lastPositions.size() - 3; k >= lastPositions.size() - 1 - lastIrreversibleMove; k-=2) {
+                long currentPosition = lastPositions.get(k);
+                if (currentPosition == positionToCheck) {
+                    repetitionCount++;
+                }
+            }
+
+            if (repetitionCount == 2) {
+                return true;
+            }
+            else if (repetitionCount == 1 && lastPositions.size() > 2) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

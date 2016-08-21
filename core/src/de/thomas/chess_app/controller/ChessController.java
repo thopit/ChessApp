@@ -80,6 +80,7 @@ public class ChessController {
 
 
                         gameScreen.updateEvaluation();
+                        gameScreen.addPosition(position.getHashCode());
                         //System.out.println(ChessUtil.evaluate(position, 1));
                         //System.out.println();
                         return true;
@@ -95,10 +96,11 @@ public class ChessController {
     }
 
     public void computerMove() {
-        short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition());
+        short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition(), gameScreen.getLastPositions());
 
         try {
             chessGame.getPosition().doMove(move);
+            gameScreen.addPosition(chessGame.getPosition().getHashCode());
         } catch (IllegalMoveException e) {
             e.printStackTrace();
         }
@@ -208,11 +210,13 @@ public class ChessController {
 
     public void goForward() {
         chessGame.goForward();
+        gameScreen.addPosition(chessGame.getPosition().getHashCode());
         gameScreen.updateEvaluation();
     }
 
     public void goBack() {
         chessGame.goBack();
+        gameScreen.removeLastPosition();
         gameScreen.updateEvaluation();
     }
 }

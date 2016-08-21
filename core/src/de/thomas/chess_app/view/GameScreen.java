@@ -19,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import chesspresso.Chess;
@@ -67,6 +69,7 @@ public class GameScreen implements Screen {
     private String whiteEvaluation;
 
     private Game chessGame;
+    List<Long> lastPositions;
     private InputMultiplexer multiplexer;
     private ChessController controller;
 
@@ -74,6 +77,8 @@ public class GameScreen implements Screen {
         this.chessGame = chessGame;
         this.multiplexer = multiplexer;
         this.controller = controller;
+        lastPositions = new LinkedList<Long>();
+        lastPositions.add(chessGame.getPosition().getHashCode());
     }
 
     @Override
@@ -284,6 +289,20 @@ public class GameScreen implements Screen {
 
     public void setChessGame(Game chessGame) {
         this.chessGame = chessGame;
+    }
+
+    public List<Long> getLastPositions() {
+        return lastPositions;
+    }
+
+    public void addPosition(long position) {
+        lastPositions.add(position);
+    }
+
+    public void removeLastPosition() {
+        if (lastPositions.size() > 0) {
+            lastPositions.remove(lastPositions.size() - 1);
+        }
     }
 
     private Skin createTextButtonSkin() {
