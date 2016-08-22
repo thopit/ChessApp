@@ -302,10 +302,12 @@ public class GameScreen implements Screen {
         int eval = ChessUtil.evaluate(chessGame.getPosition(), 1);
         whiteEvaluation = String.valueOf(eval);
 
-        if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock())) {
+        boolean hasRepetition = ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock());
+
+        if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || hasRepetition)  {
             gameEnded = true;
 
-            if (ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock())) {
+            if (hasRepetition) {
                 gameResult = "Draw";
             }
             else if (eval > 0 ) {
@@ -333,6 +335,10 @@ public class GameScreen implements Screen {
         if (lastPositions.size() > 0) {
             lastPositions.remove(lastPositions.size() - 1);
         }
+    }
+
+    public boolean isGameEnded() {
+        return gameEnded;
     }
 
     private Skin createTextButtonSkin() {

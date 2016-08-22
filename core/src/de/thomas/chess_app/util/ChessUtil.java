@@ -317,9 +317,9 @@ public class ChessUtil {
             if (repetitionCount == 2) {
                 return true;
             }
-            else if (repetitionCount == 1 && lastPositions.size() > 2) {
-                return true;
-            }
+            //else if (repetitionCount == 1 && lastPositions.size() > 2) {
+            //    return true;
+            //}
         }
 
         return false;

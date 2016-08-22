@@ -56,8 +56,7 @@ public class ChessController {
         gameScreen.setSelectedPosition(null);
         gameScreen.setSelectedStone(0);
 
-        if (Math.abs(ChessUtil.evaluate(chessGame.getPosition(), 1)) == ChessUtil.MAXIMUM_VALUE ||
-                ChessUtil.hasThreeFoldRepetition(gameScreen.getLastPositions(), chessGame.getPosition().getHalfMoveClock())) {
+        if (gameScreen.isGameEnded()) {
             return false;
         }
 
@@ -83,9 +82,8 @@ public class ChessController {
                         //System.out.println(ChessUtil.evaluate(position, 1));
                         position.doMove(move);
 
-
-                        gameScreen.updateEvaluation();
                         gameScreen.addPosition(position.getHashCode());
+                        gameScreen.updateEvaluation();
                         //System.out.println(ChessUtil.evaluate(position, 1));
                         //System.out.println();
                         return true;
@@ -101,6 +99,10 @@ public class ChessController {
     }
 
     public void computerMove() {
+        if (gameScreen.isGameEnded()) {
+            return;
+        }
+
         short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition(), gameScreen.getLastPositions());
 
         try {
