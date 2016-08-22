@@ -1,5 +1,7 @@
 package de.thomas.chess_app.util;
 
+import java.util.List;
+
 import chesspresso.Chess;
 import chesspresso.position.Position;
 
@@ -298,5 +300,28 @@ public class ChessUtil {
                 return -MAXIMUM_VALUE;
             }
         }
+    }
+
+    public static boolean hasThreeFoldRepetition(List<Long> lastPositions, int lastIrreversibleMove) {
+        if (lastIrreversibleMove > 4) {
+            long positionToCheck = lastPositions.get(lastPositions.size() - 1);
+            int repetitionCount = 0;
+
+            for (int k = lastPositions.size() - 3; k >= lastPositions.size() - 1 - lastIrreversibleMove; k-=2) {
+                long currentPosition = lastPositions.get(k);
+                if (currentPosition == positionToCheck) {
+                    repetitionCount++;
+                }
+            }
+
+            if (repetitionCount == 2) {
+                return true;
+            }
+            else if (repetitionCount == 1 && lastPositions.size() > 2) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -67,6 +67,8 @@ public class GameScreen implements Screen {
     private final int SQUARE_SIZE = 90;
 
     private String whiteEvaluation;
+    private boolean gameEnded;
+    private String gameResult;
 
     private Game chessGame;
     List<Long> lastPositions;
@@ -77,8 +79,14 @@ public class GameScreen implements Screen {
         this.chessGame = chessGame;
         this.multiplexer = multiplexer;
         this.controller = controller;
+        startNewGame();
+    }
+
+    public void startNewGame() {
         lastPositions = new LinkedList<Long>();
         lastPositions.add(chessGame.getPosition().getHashCode());
+        gameEnded = false;
+        gameResult = "";
     }
 
     @Override
@@ -224,7 +232,14 @@ public class GameScreen implements Screen {
             }
         }
 
-        font.draw(batch, "White advantage: " + whiteEvaluation, 20, 220);
+
+
+        if (gameEnded) {
+            font.draw(batch, gameResult, 20, 220);
+        }
+        else {
+            font.draw(batch, "White advantage: " + whiteEvaluation, 20, 220);
+        }
 
         batch.end();
 
@@ -284,7 +299,22 @@ public class GameScreen implements Screen {
     }
 
     public void updateEvaluation() {
-        whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
+        int eval = ChessUtil.evaluate(chessGame.getPosition(), 1);
+        whiteEvaluation = String.valueOf(eval);
+
+        if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock())) {
+            gameEnded = true;
+
+            if (ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock())) {
+                gameResult = "Draw";
+            }
+            else if (eval > 0 ) {
+                gameResult = "White victory";
+            }
+            else {
+                gameResult = "Black victory";
+            }
+        }
     }
 
     public void setChessGame(Game chessGame) {

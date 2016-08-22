@@ -56,6 +56,11 @@ public class ChessController {
         gameScreen.setSelectedPosition(null);
         gameScreen.setSelectedStone(0);
 
+        if (Math.abs(ChessUtil.evaluate(chessGame.getPosition(), 1)) == ChessUtil.MAXIMUM_VALUE ||
+                ChessUtil.hasThreeFoldRepetition(gameScreen.getLastPositions(), chessGame.getPosition().getHalfMoveClock())) {
+            return false;
+        }
+
         int startSqi = gameScreen.getSqi(startX, startY);
         int endSqi = gameScreen.getSqi(endX, endY);
 
@@ -205,6 +210,7 @@ public class ChessController {
         Game game = new Game();
         chessGame = game;
         gameScreen.setChessGame(chessGame);
+        gameScreen.startNewGame();
         gameScreen.updateEvaluation();
     }
 

@@ -89,7 +89,7 @@ public class Algorithm {
             DebugHelper.debug("Material value for player " + player + ": " + result, 3, MAX_DEPTH - depth);
             return result;
         }
-        else if (hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
+        else if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
             return 0;
         }
 
@@ -125,7 +125,7 @@ public class Algorithm {
     }
 
     private static int qSearch(Position position, int depth, int alpha, int beta, int player, List<Long> lastPositions) {
-        if (hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
+        if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
             return 0;
         }
 
@@ -168,26 +168,4 @@ public class Algorithm {
         return alpha;
     }
 
-    private static boolean hasThreeFoldRepetition(List<Long> lastPositions, int lastIrreversibleMove) {
-        if (lastIrreversibleMove > 4) {
-            long positionToCheck = lastPositions.get(lastPositions.size() - 1);
-            int repetitionCount = 0;
-
-            for (int k = lastPositions.size() - 3; k >= lastPositions.size() - 1 - lastIrreversibleMove; k-=2) {
-                long currentPosition = lastPositions.get(k);
-                if (currentPosition == positionToCheck) {
-                    repetitionCount++;
-                }
-            }
-
-            if (repetitionCount == 2) {
-                return true;
-            }
-            else if (repetitionCount == 1 && lastPositions.size() > 2) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }
