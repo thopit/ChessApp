@@ -104,11 +104,11 @@ public class Algorithm {
             }
 
             positionsChecked++;
-
-            List<Long> lastPositionsClone = new LinkedList<Long>(lastPositions);
-            lastPositionsClone.add(position.getHashCode());
-            int score = -alphaBeta(position, depth - 1, -beta, -alpha, -player, lastPositionsClone);
+            
+            lastPositions.add(position.getHashCode());
+            int score = -alphaBeta(position, depth - 1, -beta, -alpha, -player, lastPositions);
             position.undoMove();
+            lastPositions.remove(lastPositions.size() - 1);
 
             if (score >= beta) {
                 DebugHelper.debug("Best value: " + beta, 3, MAX_DEPTH - depth);
@@ -152,10 +152,10 @@ public class Algorithm {
 
             positionsChecked++;
 
-            List<Long> lastPositionsClone = new LinkedList<Long>(lastPositions);
-            lastPositionsClone.add(position.getHashCode());
-            int score = -qSearch(position, depth - 1, -beta, -alpha, -player, lastPositionsClone);
+            lastPositions.add(position.getHashCode());
+            int score = -qSearch(position, depth - 1, -beta, -alpha, -player, lastPositions);
             position.undoMove();
+            lastPositions.remove(lastPositions.size() - 1);
 
             if (score >= beta) {
                 return beta;

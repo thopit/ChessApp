@@ -6,7 +6,7 @@ import java.io.PrintStream;
 
 public class DebugHelper {
     private static PrintStream stream = System.out;
-    public static final int DEBUG_LEVEL = 2;
+    public static final int DEBUG_LEVEL = 1;
     public static boolean useFile = false;
 
 
