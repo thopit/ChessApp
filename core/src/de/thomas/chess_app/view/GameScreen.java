@@ -69,6 +69,9 @@ public class GameScreen implements Screen {
     private String whiteEvaluation;
     private boolean gameEnded;
     private String gameResult;
+    private boolean calculating;
+    private String calcString;
+    private float calcTimer;
 
     private Game chessGame;
     List<Long> lastPositions;
@@ -87,6 +90,8 @@ public class GameScreen implements Screen {
         lastPositions.add(chessGame.getPosition().getHashCode());
         gameEnded = false;
         gameResult = "";
+        calcString = "";
+        calcTimer = 0;
     }
 
     @Override
@@ -233,12 +238,26 @@ public class GameScreen implements Screen {
         }
 
 
-
         if (gameEnded) {
             font.draw(batch, gameResult, 20, 220);
         }
         else {
             font.draw(batch, "White advantage: " + whiteEvaluation, 20, 220);
+
+            if (calculating) {
+                font.draw(batch, "Calculating" + calcString, 20, 260);
+
+                calcTimer += delta;
+
+                if (calcTimer >= 0.5) {
+                    calcString += ".";
+                    calcTimer = 0;
+                }
+
+                if (calcString.length() > 3) {
+                    calcString = "";
+                }
+            }
         }
 
         batch.end();
@@ -341,6 +360,18 @@ public class GameScreen implements Screen {
         return gameEnded;
     }
 
+    public void setCalculating(boolean calculating) {
+        this.calculating = calculating;
+    }
+
+    public boolean isCalculating() {
+        return calculating;
+    }
+
+    public void setCalcTimer(float calcTimer) {
+        this.calcTimer = calcTimer;
+    }
+
     private Skin createTextButtonSkin() {
         Skin skin = new Skin();
 
@@ -355,8 +386,11 @@ public class GameScreen implements Screen {
 
         // Configure a TextButtonStyle and name it "default". Skin resources are stored by type, so this doesn't overwrite the font.
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+
+
+
         textButtonStyle.up = skin.newDrawable("white", Color.DARK_GRAY);
-        textButtonStyle.down = skin.newDrawable("white", Color.DARK_GRAY);
+        textButtonStyle.down = skin.newDrawable("white", Color.LIGHT_GRAY);
         //textButtonStyle.checked = skin.newDrawable("white", Color.BLUE);
         textButtonStyle.over = skin.newDrawable("white", Color.LIGHT_GRAY);
         textButtonStyle.font = skin.getFont("default");

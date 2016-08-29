@@ -56,7 +56,7 @@ public class ChessController {
         gameScreen.setSelectedPosition(null);
         gameScreen.setSelectedStone(0);
 
-        if (gameScreen.isGameEnded()) {
+        if (gameScreen.isGameEnded() || gameScreen.isCalculating()) {
             return false;
         }
 
@@ -99,27 +99,34 @@ public class ChessController {
     }
 
     public void computerMove() {
-        if (gameScreen.isGameEnded()) {
+        if (gameScreen.isGameEnded() || gameScreen.isCalculating()) {
             return;
         }
 
-        short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition(), gameScreen.getLastPositions());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                gameScreen.setCalculating(true);
+                short move = Algorithm.bestMoveAlphaBeta(chessGame.getPosition(), gameScreen.getLastPositions());
 
-        try {
-            chessGame.getPosition().doMove(move);
-            gameScreen.addPosition(chessGame.getPosition().getHashCode());
-        } catch (IllegalMoveException e) {
-            e.printStackTrace();
-        }
+                try {
+                    chessGame.getPosition().doMove(move);
+                    gameScreen.addPosition(chessGame.getPosition().getHashCode());
+                } catch (IllegalMoveException e) {
+                    e.printStackTrace();
+                }
 
-        gameScreen.updateEvaluation();
+                gameScreen.updateEvaluation();
+                gameScreen.setCalculating(false);
+                gameScreen.setCalcTimer(0);
+            }
+        }).start();
     }
 
     private short getMove(int stone, int startSqi, int endSqi) {
         Position position = chessGame.getPosition();
 
         short move;
-
 
 
         //Castling
@@ -209,6 +216,10 @@ public class ChessController {
     }
 
     public void newGame() {
+        if (gameScreen.isCalculating()) {
+            return;
+        }
+
         Game game = new Game();
         chessGame = game;
         gameScreen.setChessGame(chessGame);

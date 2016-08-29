@@ -104,7 +104,7 @@ public class Algorithm {
             }
 
             positionsChecked++;
-            
+
             lastPositions.add(position.getHashCode());
             int score = -alphaBeta(position, depth - 1, -beta, -alpha, -player, lastPositions);
             position.undoMove();
