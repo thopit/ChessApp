@@ -12,6 +12,7 @@ import de.thomas.chess_app.util.DebugHelper;
 
 public class Algorithm {
     private static final int MAX_DEPTH = 2;
+    private static final int MAX_Q_SEARCH_DEPTH = 6;
     private static int positionsChecked;
 
     public static short bestMoveAlphaBeta(Position position, List<Long> lastPositions) {
@@ -85,7 +86,7 @@ public class Algorithm {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-            int result = qSearch(position, depth, alpha, beta, player, lastPositions);
+            int result = qSearch(position, MAX_Q_SEARCH_DEPTH, alpha, beta, player, lastPositions);
             DebugHelper.debug("Material value for player " + player + ": " + result, 3, MAX_DEPTH - depth);
             return result;
         }
@@ -136,6 +137,10 @@ public class Algorithm {
         }
         if (alpha < standPat) {
             alpha = standPat;
+        }
+
+        if (depth == 0) {
+            return standPat;
         }
 
         short[] moves = position.getAllCapturingMoves();
