@@ -90,7 +90,7 @@ public class Algorithm {
             DebugHelper.debug("Material value for player " + player + ": " + result, 3, MAX_DEPTH - depth);
             return result;
         }
-        else if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
+        else if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock()) || position.getHalfMoveClock() >= 100) {
             return 0;
         }
 
@@ -126,7 +126,7 @@ public class Algorithm {
     }
 
     private static int qSearch(Position position, int depth, int alpha, int beta, int player, List<Long> lastPositions) {
-        if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock())) {
+        if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock()) || position.getHalfMoveClock() >= 100) {
             return 0;
         }
 

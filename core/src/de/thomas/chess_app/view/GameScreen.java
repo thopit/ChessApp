@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -86,7 +87,7 @@ public class GameScreen implements Screen {
     }
 
     public void startNewGame() {
-        lastPositions = new LinkedList<Long>();
+        lastPositions = new ArrayList<Long>();
         lastPositions.add(chessGame.getPosition().getHashCode());
         gameEnded = false;
         gameResult = "";
@@ -321,12 +322,12 @@ public class GameScreen implements Screen {
         int eval = ChessUtil.evaluate(chessGame.getPosition(), 1);
         whiteEvaluation = String.valueOf(eval);
 
-        boolean hasRepetition = ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock());
+        boolean isDraw = ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock()) || chessGame.getPosition().getHalfMoveClock() >= 100;
 
-        if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || hasRepetition)  {
+        if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || isDraw)  {
             gameEnded = true;
 
-            if (hasRepetition) {
+            if (isDraw) {
                 gameResult = "Draw";
             }
             else if (eval > 0 ) {
