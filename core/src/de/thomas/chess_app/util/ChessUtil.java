@@ -168,8 +168,7 @@ public class ChessUtil {
             return mateCalculator(position, player);
         }
 
-        //TODO add 3 moves repetition
-        if (position.isStaleMate() || position.isTerminal()) {
+        if (position.isStaleMate() || position.getHalfMoveClock() >= 100) {
             return 0;
         }
 

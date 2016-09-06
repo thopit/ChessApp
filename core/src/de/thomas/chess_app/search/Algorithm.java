@@ -86,7 +86,7 @@ public class Algorithm {
         short[] moves = position.getAllMoves();
 
         if (depth == 0 || moves.length == 0) {
-            int result = qSearch(position, MAX_Q_SEARCH_DEPTH, alpha, beta, player, lastPositions);
+            int result = qSearch(position, MAX_Q_SEARCH_DEPTH, alpha, beta, player, lastPositions, MAX_DEPTH - depth);
             DebugHelper.debug("Material value for player " + player + ": " + result, 3, MAX_DEPTH - depth);
             return result;
         }
@@ -125,12 +125,20 @@ public class Algorithm {
         return alpha;
     }
 
-    private static int qSearch(Position position, int depth, int alpha, int beta, int player, List<Long> lastPositions) {
+    private static int qSearch(Position position, int depth, int alpha, int beta, int player, List<Long> lastPositions, int moveDistance) {
         if (ChessUtil.hasThreeFoldRepetition(lastPositions, position.getHalfMoveClock()) || position.getHalfMoveClock() >= 100) {
             return 0;
         }
 
         int standPat = ChessUtil.evaluate(position, player);
+
+        //If check mate -> earlier check mate is better
+        if (standPat == ChessUtil.MAXIMUM_VALUE) {
+            standPat -= moveDistance;
+        }
+        else if (standPat == -ChessUtil.MAXIMUM_VALUE) {
+            standPat += moveDistance;
+        }
 
         if (standPat >= beta) {
             return beta;
@@ -158,7 +166,7 @@ public class Algorithm {
             positionsChecked++;
 
             lastPositions.add(position.getHashCode());
-            int score = -qSearch(position, depth - 1, -beta, -alpha, -player, lastPositions);
+            int score = -qSearch(position, depth - 1, -beta, -alpha, -player, lastPositions, moveDistance + 1);
             position.undoMove();
             lastPositions.remove(lastPositions.size() - 1);
 
