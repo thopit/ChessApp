@@ -37,6 +37,9 @@ public class Algorithm {
 
         short bestMove = 0;
 
+        int alpha = -ChessUtil.MAXIMUM_VALUE;
+        int beta = ChessUtil.MAXIMUM_VALUE;
+
         for (short move : moves) {
             Position testPosition = new Position(position);
 
@@ -54,13 +57,21 @@ public class Algorithm {
 
             DebugHelper.debug("Checking move: " + Move.getString(move), 2);
 
-            int result = -alphaBeta(testPosition, depth, -ChessUtil.MAXIMUM_VALUE, ChessUtil.MAXIMUM_VALUE, -player, lastPositionsClone);
+            int result = -alphaBeta(testPosition, depth, -beta, -alpha, -player, lastPositionsClone);
 
             DebugHelper.debug("Result: " + result, 2);
 
             if (result > bestResult) {
                 bestResult = result;
                 bestMove = move;
+            }
+
+            if (result > alpha) {
+                //alpha = result;
+            }
+            //Mate in one move found
+            if (result >= beta) {
+                //break;
             }
         }
 
