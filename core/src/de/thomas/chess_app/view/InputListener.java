@@ -68,10 +68,10 @@ public class InputListener implements InputProcessor {
                 lastPosY = -1;
             }
             else {
-                controller.trySelect(screenX, screenY);
+                //controller.trySelect(screenX, screenY);
 
-                lastPosX = screenX;
-                lastPosY = screenY;
+                //lastPosX = screenX;
+                //lastPosY = screenY;
             }
         }
         return false;

@@ -11,8 +11,8 @@ import de.thomas.chess_app.util.ChessUtil;
 import de.thomas.chess_app.util.DebugHelper;
 
 public class Algorithm {
-    private static final int MAX_DEPTH = 2;
-    private static final int MAX_Q_SEARCH_DEPTH = 6;
+    private static final int MAX_DEPTH = 3;
+    private static final int MAX_Q_SEARCH_DEPTH = 7;
     private static int positionsChecked;
 
     public static short bestMoveAlphaBeta(Position position, List<Long> lastPositions) {
@@ -67,11 +67,11 @@ public class Algorithm {
             }
 
             if (result > alpha) {
-                //alpha = result;
+                alpha = result;
             }
             //Mate in one move found
             if (result >= beta) {
-                //break;
+                break;
             }
         }
 

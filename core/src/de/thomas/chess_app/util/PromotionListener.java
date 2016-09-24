@@ -3,7 +3,7 @@ package de.thomas.chess_app.util;
 import com.badlogic.gdx.Input;
 
 public class PromotionListener implements Input.TextInputListener {
-    private String text = "";
+    private String text = "X";
 
     @Override
     public void input(String text) {
@@ -12,11 +12,11 @@ public class PromotionListener implements Input.TextInputListener {
 
     @Override
     public void canceled() {
-        this.text = "";
+        this.text = "Q";
     }
 
     public String getText() {
-        while (text.equals("")) {
+        while (text.equals("X")) {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {

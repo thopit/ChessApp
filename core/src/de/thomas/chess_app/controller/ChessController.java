@@ -63,7 +63,7 @@ public class ChessController {
         int startSqi = gameScreen.getSqi(startX, startY);
         int endSqi = gameScreen.getSqi(endX, endY);
 
-        if (startSqi < 0 || endSqi < 0 || startSqi > 63 || endSqi > 63) {
+        if (startSqi < 0 || endSqi < 0 || startSqi > 63 || endSqi > 63 || startSqi == endSqi) {
             return false;
         }
 
