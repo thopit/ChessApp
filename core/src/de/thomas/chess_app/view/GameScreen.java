@@ -60,6 +60,7 @@ public class GameScreen implements Screen {
     private Map<Short, Texture> textureMap;
 
     private GridPoint2 selectedPosition;
+    private GridPoint2 selectedStartMousePosition;
     private int selectedStone;
 
     private final int WIDTH = 720;
@@ -197,6 +198,7 @@ public class GameScreen implements Screen {
         textureMap.put(Chess.BLACK_PAWN, pawnBlack);
 
         selectedPosition = null;
+        selectedStartMousePosition = null;
         selectedStone = 0;
 
         whiteEvaluation = String.valueOf(ChessUtil.evaluate(chessGame.getPosition(), 1));
@@ -222,12 +224,6 @@ public class GameScreen implements Screen {
                    batch.draw(fieldWhite, x * SQUARE_SIZE, y * SQUARE_SIZE + Y_SHIFT);
                 }
 
-                Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-
-                if (selectedStone != 0) {
-                    batch.draw(textureMap.get((short) selectedStone), mousePos.x - SQUARE_SIZE / 2, mousePos.y - SQUARE_SIZE / 2);
-                }
-
                 short stone = (short) position.getStone(Chess.coorToSqi(x, y));
 
                 if (stone != 0) {
@@ -236,6 +232,15 @@ public class GameScreen implements Screen {
                     }
                 }
             }
+        }
+
+        Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+
+        if (selectedStone != 0) {
+            int deltaX = (int) mousePos.x - selectedStartMousePosition.x;
+            int deltaY = (int) mousePos.y - selectedStartMousePosition.y;
+
+            batch.draw(textureMap.get((short) selectedStone), selectedPosition.x * SQUARE_SIZE + deltaX, selectedPosition.y * SQUARE_SIZE + Y_SHIFT + deltaY);
         }
 
 
@@ -312,6 +317,9 @@ public class GameScreen implements Screen {
 
     public void setSelectedPosition(GridPoint2 selectedPosition) {
         this.selectedPosition = selectedPosition;
+
+        Vector3 mousePos = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+        this.selectedStartMousePosition = new GridPoint2((int) mousePos.x, (int) mousePos.y);
     }
 
     public void setSelectedStone(int selectedStone) {
