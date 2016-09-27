@@ -2,7 +2,6 @@ package de.thomas.chess_app.view;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.GridPoint2;
 
 import de.thomas.chess_app.controller.ChessController;
 
@@ -67,13 +66,8 @@ public class InputListener implements InputProcessor {
                 lastPosX = -1;
                 lastPosY = -1;
             }
-            else {
-                //controller.trySelect(screenX, screenY);
-
-                //lastPosX = screenX;
-                //lastPosY = screenY;
-            }
         }
+
         return false;
     }
 

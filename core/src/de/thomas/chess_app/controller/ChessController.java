@@ -1,21 +1,16 @@
 package de.thomas.chess_app.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.GridPoint2;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 
 import chesspresso.Chess;
 import chesspresso.game.Game;
-import chesspresso.game.GameHeaderModel;
-import chesspresso.game.GameModel;
 import chesspresso.move.IllegalMoveException;
 import chesspresso.move.Move;
 import chesspresso.pgn.PGNReader;
@@ -23,7 +18,6 @@ import chesspresso.pgn.PGNSyntaxError;
 import chesspresso.pgn.PGNWriter;
 import chesspresso.position.Position;
 import de.thomas.chess_app.search.Algorithm;
-import de.thomas.chess_app.util.ChessUtil;
 import de.thomas.chess_app.util.PromotionListener;
 import de.thomas.chess_app.view.GameScreen;
 
@@ -79,13 +73,10 @@ public class ChessController {
             for (short possibleMove : possibleMoves) {
                 if (move == possibleMove) {
                     try {
-                        //System.out.println(ChessUtil.evaluate(position, 1));
                         position.doMove(move);
 
                         gameScreen.addPosition(position.getHashCode());
                         gameScreen.updateEvaluation();
-                        //System.out.println(ChessUtil.evaluate(position, 1));
-                        //System.out.println();
                         return true;
                     } catch (IllegalMoveException e) {
                         e.printStackTrace();
@@ -128,18 +119,14 @@ public class ChessController {
 
         short move;
 
-
         //Castling
         if (stone == Chess.WHITE_KING && startSqi == Chess.E1 && endSqi == Chess.G1) {
             move = Move.getShortCastle(Chess.WHITE);
-        }
-        else if (stone == Chess.WHITE_KING && startSqi == Chess.E1 && endSqi == Chess.C1) {
+        } else if (stone == Chess.WHITE_KING && startSqi == Chess.E1 && endSqi == Chess.C1) {
             move = Move.getLongCastle(Chess.WHITE);
-        }
-        else if (stone == Chess.BLACK_KING && startSqi == Chess.E8 && endSqi == Chess.G8) {
+        } else if (stone == Chess.BLACK_KING && startSqi == Chess.E8 && endSqi == Chess.G8) {
             move = Move.getShortCastle(Chess.BLACK);
-        }
-        else if (stone == Chess.BLACK_KING && startSqi == Chess.E8 && endSqi == Chess.C8) {
+        } else if (stone == Chess.BLACK_KING && startSqi == Chess.E8 && endSqi == Chess.C8) {
             move = Move.getLongCastle(Chess.BLACK);
         }
         //En passant
@@ -158,18 +145,14 @@ public class ChessController {
 
             if (input.equalsIgnoreCase("R") || input.equalsIgnoreCase("T")) {
                 move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.ROOK);
-            }
-            else if (input.equalsIgnoreCase("N") || input.equalsIgnoreCase("S")) {
+            } else if (input.equalsIgnoreCase("N") || input.equalsIgnoreCase("S")) {
                 move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.KNIGHT);
-            }
-            else if (input.equalsIgnoreCase("B") || input.equalsIgnoreCase("L")) {
+            } else if (input.equalsIgnoreCase("B") || input.equalsIgnoreCase("L")) {
                 move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.BISHOP);
-            }
-            else {
+            } else {
                 move = Move.getPawnMove(startSqi, endSqi, capturing, Chess.QUEEN);
             }
-        }
-        else {
+        } else {
             boolean capturing = position.getPiece(endSqi) != 0;
             move = Move.getRegularMove(startSqi, endSqi, capturing);
         }
