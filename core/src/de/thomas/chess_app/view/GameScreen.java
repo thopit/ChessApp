@@ -247,22 +247,22 @@ public class GameScreen implements Screen {
         if (gameEnded) {
             font.draw(batch, gameResult, 20, 220);
         }
-        else {
+        else if (ChessMain.TEST_MODE) {
             font.draw(batch, "White advantage: " + whiteEvaluation, 20, 220);
+        }
 
-            if (calculating) {
-                font.draw(batch, "Calculating" + calcString, 20, 260);
+        if (calculating) {
+            font.draw(batch, "Calculating" + calcString, 20, 260);
 
-                calcTimer += delta;
+            calcTimer += delta;
 
-                if (calcTimer >= 0.5) {
-                    calcString += ".";
-                    calcTimer = 0;
-                }
+            if (calcTimer >= 0.5) {
+                calcString += ".";
+                calcTimer = 0;
+            }
 
-                if (calcString.length() > 3) {
-                    calcString = "";
-                }
+            if (calcString.length() > 3) {
+                calcString = "";
             }
         }
 
