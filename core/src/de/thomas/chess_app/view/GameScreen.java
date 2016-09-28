@@ -326,22 +326,28 @@ public class GameScreen implements Screen {
     }
 
     public void updateEvaluation() {
+        updateEvaluation(true);
+    }
+
+    public void updateEvaluation(boolean checkForEnd) {
         int eval = ChessUtil.evaluate(chessGame.getPosition(), 1);
         whiteEvaluation = String.valueOf(eval);
 
-        boolean isDraw = ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock()) || chessGame.getPosition().getHalfMoveClock() >= 100;
+        if (checkForEnd) {
+            boolean isDraw = ChessUtil.hasThreeFoldRepetition(lastPositions, chessGame.getPosition().getHalfMoveClock()) || chessGame.getPosition().getHalfMoveClock() >= 100;
 
-        if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || isDraw)  {
-            gameEnded = true;
+            if (Math.abs(eval) == ChessUtil.MAXIMUM_VALUE || isDraw)  {
+                gameEnded = true;
 
-            if (isDraw) {
-                gameResult = "Draw";
-            }
-            else if (eval > 0 ) {
-                gameResult = "White victory";
-            }
-            else {
-                gameResult = "Black victory";
+                if (isDraw) {
+                    gameResult = "Draw";
+                }
+                else if (eval > 0 ) {
+                    gameResult = "White victory";
+                }
+                else {
+                    gameResult = "Black victory";
+                }
             }
         }
     }

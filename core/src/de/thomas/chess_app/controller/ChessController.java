@@ -213,12 +213,12 @@ public class ChessController {
     public void goForward() {
         chessGame.goForward();
         gameScreen.addPosition(chessGame.getPosition().getHashCode());
-        gameScreen.updateEvaluation();
+        gameScreen.updateEvaluation(false);
     }
 
     public void goBack() {
         chessGame.goBack();
         gameScreen.removeLastPosition();
-        gameScreen.updateEvaluation();
+        gameScreen.updateEvaluation(false);
     }
 }
