@@ -104,11 +104,13 @@ public class GameScreen implements Screen {
         stage = new Stage();
         multiplexer.addProcessor(stage);
 
+        if (Gdx.graphics.getHeight() < 960) {
+            stage.getViewport().setCamera(camera);
+        }
 
         if (ChessMain.TEST_MODE) {
             Table table = new Table();
-            //table.setDebug(true);
-            table.setBounds(260, 100, 200, 120);
+            table.setBounds(300, 100, 200, 120);
 
             stage.addActor(table);
 
