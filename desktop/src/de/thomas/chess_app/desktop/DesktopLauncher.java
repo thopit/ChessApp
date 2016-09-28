@@ -11,7 +11,6 @@ public class DesktopLauncher {
         config.width = 540;
         config.height = 960;
 
-
 		new LwjglApplication(new ChessMain(), config);
 	}
 }
