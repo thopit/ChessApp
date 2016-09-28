@@ -173,10 +173,8 @@ public class ChessController {
             e.printStackTrace();
             return;
         } catch (IOException e) {
-            e.printStackTrace();
             return;
         } catch (PGNSyntaxError pgnSyntaxError) {
-            pgnSyntaxError.printStackTrace();
             return;
         }
 
