@@ -139,7 +139,6 @@ public class ChessController {
 
             Gdx.input.getTextInput(listener, "Choose promotion", "", "Q, R, N, B");
             String input = listener.getText();
-            System.out.println("Input: " + input);
 
             boolean capturing = position.getPiece(endSqi) != 0;
 
