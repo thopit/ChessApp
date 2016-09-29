@@ -170,7 +170,6 @@ public class ChessController {
         try {
             game = new PGNReader(new FileInputStream(file), "Game").parseGame();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
             return;
         } catch (IOException e) {
             return;
@@ -192,7 +191,6 @@ public class ChessController {
             new PGNWriter(writer).write(chessGame.getModel());
             writer.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
