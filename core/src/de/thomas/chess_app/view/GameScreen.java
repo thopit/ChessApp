@@ -104,7 +104,10 @@ public class GameScreen implements Screen {
         stage = new Stage();
         multiplexer.addProcessor(stage);
 
-        if (Gdx.graphics.getHeight() < 960) {
+        System.out.println(Gdx.graphics.getWidth() + " " + Gdx.graphics.getHeight());
+
+        //Scale if necessary
+        if (Gdx.graphics.getHeight() < 960 || Gdx.graphics.getWidth() < 540) {
             stage.getViewport().setCamera(camera);
         }
 
