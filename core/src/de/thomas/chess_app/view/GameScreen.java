@@ -39,7 +39,6 @@ public class GameScreen implements Screen {
 
     private Texture fieldWhite;
     private Texture fieldBlack;
-    private Texture fieldSelected;
 
     private Texture kingWhite;
     private Texture kingBlack;
@@ -170,7 +169,6 @@ public class GameScreen implements Screen {
 
         fieldBlack = new Texture("field_black.png");
         fieldWhite = new Texture("field_white.png");
-        fieldSelected = new Texture("field_selected.png");
 
         kingWhite = new Texture("king_white.png");
         kingBlack = new Texture("king_black.png");
